@@ -24,10 +24,6 @@
     .notice-box ul { margin: 0; padding-left: 16px; }
     .notice-box li { margin-bottom: 4px; }
 
-    /* Special Delivery Timing Note */
-    .delivery-note { background-color: #d4edda; border-left: 4px solid #28a745; color: #155724; padding: 10px 12px; border-radius: 4px; margin-top: 15px; margin-bottom: 10px; font-size: 12px; line-height: 1.5; }
-    .delivery-note strong { display: block; margin-bottom: 4px; font-size: 13px; color: #0f3916; }
-
     .amount-box { background-color: #eef3f8; text-align: center; padding: 12px; border-radius: 6px; margin: 12px 0; }
     .amount-title { font-size: 13px; color: #666; }
     .amount-value { font-size: 24px; font-weight: bold; color: #111; margin-top: 3px; }
@@ -43,12 +39,21 @@
     .qr-text { font-size: 11px; color: #666; margin-top: 4px; }
 
     .pay-btn { width: 100%; padding: 11px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; text-decoration: none; display: inline-block; text-align: center; box-sizing: border-box; margin-bottom: 8px; }
-    .pay-btn.disabled { background-color: #a0b2c6; cursor: not-allowed; pointer-events: none; }
     
     .step-2 { margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; }
     .submit-btn { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 8px; }
     .submit-btn:disabled { background-color: #94d3a2; cursor: not-allowed; }
     #statusMsg { margin-top: 12px; text-align: center; font-weight: bold; font-size: 13px; }
+
+    /* Success Popup Modal Styling */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
+    .modal-box { background: #fff; padding: 25px; border-radius: 10px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: scaleUp 0.3s ease-in-out; }
+    @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-icon { font-size: 45px; color: #28a745; margin-bottom: 10px; }
+    .modal-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 15px; }
+    .modal-text-eng { font-size: 13px; color: #444; line-height: 1.5; margin-bottom: 12px; background: #f8f9fa; padding: 10px; border-radius: 6px; border-left: 4px solid #007bff; text-align: left; }
+    .modal-text-hin { font-size: 13px; color: #444; line-height: 1.5; margin-bottom: 20px; background: #fff3cd; padding: 10px; border-radius: 6px; border-left: 4px solid #ffc107; text-align: left; }
+    .modal-btn { background-color: #28a745; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; }
   </style>
 </head>
 <body>
@@ -114,14 +119,11 @@
 
       <!-- Payment Section With Note & Timer -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
-        
-        <!-- Payment Section Note -->
         <div class="notice-box" style="margin-bottom: 10px; background-color: #fff3cd; border-color: #ffc107; color: #856404;">
           <strong>⚡ Payment Mode Notice:</strong>
           • Only UPI & QR Code scan is accepted. Complete your payment quickly before the timer expires!
         </div>
 
-        <!-- 2 Minutes Live Timer -->
         <div class="timer-box">
           ⏳ Payment Session Expires in: <span id="countdown">02:00</span>
         </div>
@@ -150,17 +152,31 @@
           <input type="file" id="screenshot" accept="image/*" required>
         </div>
 
-        <!-- Pass Delivery Note (Just above Submit Button) -->
-        <div class="delivery-note">
-          <strong>📦 Pass Delivery Timing Notice:</strong>
-          After making the payment, please do not worry. You will receive your pass between <strong>7:00 AM – 9:00 AM</strong> or <strong>7:00 PM – 9:00 PM</strong>.
-        </div>
-
         <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
       </div>
 
       <div id="statusMsg"></div>
     </form>
+  </div>
+
+  <!-- Success Popup Modal -->
+  <div id="successModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-icon">✅</div>
+      <div class="modal-title">Registration Successful!</div>
+      
+      <div class="modal-text-eng">
+        <strong>English:</strong><br>
+        After making the payment, please do not worry. You will receive your pass between <b>7:00 AM – 9:00 AM</b> or <b>7:00 PM – 9:00 PM</b>.
+      </div>
+
+      <div class="modal-text-hin">
+        <strong>हिंदी (Hindi):</strong><br>
+        पेमेंट करने के बाद कृपया परेशान न हों। आपको आपका पास सुबह <b>7:00 AM – 9:00 AM</b> या शाम <b>7:00 PM – 9:00 PM</b> के बीच मिल जाएगा।
+      </div>
+
+      <button class="modal-btn" onclick="closeModalAndReset()">OK / Done</button>
+    </div>
   </div>
 
   <script>
@@ -244,6 +260,15 @@
         paymentSectionWrapper.style.display = 'none';
         if (timerInterval) clearInterval(timerInterval);
       }
+    }
+
+    function closeModalAndReset() {
+      document.getElementById('successModal').style.display = 'none';
+      document.getElementById('registrationForm').reset();
+      document.getElementById('paymentSectionWrapper').style.display = 'none';
+      document.getElementById('statusMsg').innerText = '';
+      if (timerInterval) clearInterval(timerInterval);
+      handlePassChange();
     }
 
     document.addEventListener('DOMContentLoaded', () => {
@@ -335,12 +360,9 @@
 
           if (insertError) throw insertError;
 
-          statusMsg.style.color = "green";
-          statusMsg.innerText = "Registration Successful!";
-          form.reset();
-          paymentSectionWrapper.style.display = 'none';
-          if (timerInterval) clearInterval(timerInterval);
-          handlePassChange();
+          // Clear status message and show Popup Modal
+          statusMsg.innerText = "";
+          document.getElementById('successModal').style.display = 'flex';
 
         } catch (err) {
           console.error("Error:", err);
