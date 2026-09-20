@@ -25,6 +25,362 @@
     .notice-box li { margin-bottom: 4px; }
 
     /* Special Delivery Timing Note */
+    .delivery-note { background-color: #d4edda; border-left: 4px solid #28a745; color: #155724; padding: 10px 12px; border-radius: 4px; margin-top: 15px; margin-bottom: 10px; font-size: 12px; line-height: 1.5; }
+    .delivery-note strong { display: block; margin-bottom: 4px; font-size: 13px; color: #0f3916; }
+
+    .amount-box { background-color: #eef3f8; text-align: center; padding: 12px; border-radius: 6px; margin: 12px 0; }
+    .amount-title { font-size: 13px; color: #666; }
+    .amount-value { font-size: 24px; font-weight: bold; color: #111; margin-top: 3px; }
+    
+    /* Payment Section Wrapper & Timer */
+    .payment-section-wrapper { border: 2px dashed #007bff; padding: 12px; border-radius: 8px; background: #fbfdff; margin-top: 12px; display: none; }
+    .timer-box { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 6px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
+    .timer-box span { color: #d9534f; font-size: 14px; }
+
+    .upi-info { text-align: center; font-size: 13px; color: #555; margin-bottom: 10px; }
+    .qr-container { text-align: center; margin: 10px 0; padding: 8px; background: #fafafa; border: 1px dashed #ccc; border-radius: 6px; }
+    .qr-container img { width: 150px; height: 150px; margin-top: 6px; border-radius: 4px; }
+    .qr-text { font-size: 11px; color: #666; margin-top: 4px; }
+
+    .pay-btn { width: 100%; padding: 11px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; text-decoration: none; display: inline-block; text-align: center; box-sizing: border-box; margin-bottom: 8px; }
+    .pay-btn.disabled { background-color: #a0b2c6; cursor: not-allowed; pointer-events: none; }
+    
+    .step-2 { margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; }
+    .submit-btn { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 8px; }
+    .submit-btn:disabled { background-color: #94d3a2; cursor: not-allowed; }
+    #statusMsg { margin-top: 12px; text-align: center; font-weight: bold; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <div class="form-container">
+    <h2 style="text-align: center; margin-top: 0; margin-bottom: 12px; color: #333;">Navrang Garba 2.0</h2>
+
+    <!-- Top Notice Box -->
+    <div class="notice-box">
+      <strong>📌 Important Guidelines & Rules:</strong>
+      <ul>
+        <li>Participant Pass is strictly for <strong>Female</strong> participants only.</li>
+        <li>Audience & Freestyle Passes are available for <strong>All (Male, Female, Other)</strong>.</li>
+        <li><strong>Only UPI / QR Scanner</strong> is the accepted payment method for booking passes.</li>
+        <li>One pass is valid for <strong>one person only</strong>.</li>
+        <li>Please submit your UTR / payment screenshot within <strong>10 minutes</strong> of completing the payment. Failure to do so may result in cancellation of the registration.</li>
+      </ul>
+    </div>
+
+    <form id="registrationForm">
+      
+      <!-- 1. Full Name -->
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="Enter your full name" required>
+      </div>
+
+      <!-- 2. Phone Number -->
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" required>
+      </div>
+
+      <!-- 3. Date of Birth -->
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" required>
+      </div>
+
+      <!-- 4. Select Pass Type -->
+      <div class="form-group">
+        <label for="passType">Select Pass Type</label>
+        <select id="passType" required>
+          <option value="" disabled selected>Choose a pass</option>
+          <option value="299">Audience Pass - ₹299</option>
+          <option value="399">Freestyle Pass - ₹399</option>
+          <option value="499">Participant Pass - ₹499</option>
+        </select>
+      </div>
+
+      <!-- 5. Select Gender -->
+      <div class="form-group">
+        <label for="gender">Select Gender</label>
+        <select id="gender" required>
+          <option value="" disabled selected>Select pass type first</option>
+        </select>
+      </div>
+
+      <div class="amount-box">
+        <div class="amount-title">Total Amount</div>
+        <div class="amount-value" id="totalAmount">₹0</div>
+      </div>
+
+      <!-- Payment Section With Note & Timer -->
+      <div id="paymentSectionWrapper" class="payment-section-wrapper">
+        
+        <!-- Payment Section Note -->
+        <div class="notice-box" style="margin-bottom: 10px; background-color: #fff3cd; border-color: #ffc107; color: #856404;">
+          <strong>⚡ Payment Mode Notice:</strong>
+          • Only UPI & QR Code scan is accepted. Complete your payment quickly before the timer expires!
+        </div>
+
+        <!-- 2 Minutes Live Timer -->
+        <div class="timer-box">
+          ⏳ Payment Session Expires in: <span id="countdown">02:00</span>
+        </div>
+
+        <div class="upi-info">
+          Payment UPI ID: <strong>Navranggarba2.0@ybl</strong>
+        </div>
+
+        <div id="qrBox" class="qr-container">
+          <span style="font-size: 12px; font-weight: bold; color: #333;">Scan with Paytm, PhonePe, or GPay</span><br>
+          <img id="qrImage" src="" alt="UPI QR Code">
+          <div class="qr-text">Scan this QR code using any UPI app</div>
+        </div>
+
+        <a id="payBtn" class="pay-btn" href="#">PAY VIA UPI APP</a>
+      </div>
+
+      <div class="step-2">
+        <div class="form-group">
+          <label for="utr">UTR / Transaction ID (After Payment)</label>
+          <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" required>
+        </div>
+
+        <div class="form-group">
+          <label for="screenshot">Payment Screenshot</label>
+          <input type="file" id="screenshot" accept="image/*" required>
+        </div>
+
+        <!-- Pass Delivery Note Moved Here (Just above Submit Button) -->
+        <div class="delivery-note">
+          <strong>📦 Pass Delivery Timing Notice:</strong>
+          After making the payment, please do not worry. You will receive your pass between <strong>7:00 AM – 9:00 AM</strong> or <strong>7:00 PM – 9:00 PM</strong>.
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
+      </div>
+
+      <div id="statusMsg"></div>
+    </form>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://rdjdsqlawhawoywgvyro.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_c_uKHsH5pKT8TyKa1IqC-g_-nLUMI5W';
+    const BUCKET_NAME = 'Payment_Screenshot';
+    const TABLE_NAME = 'Registration';
+    const upiId = "Navranggarba2.0@ybl";
+
+    let timerInterval = null;
+
+    function startTimer(duration) {
+      let timer = duration, minutes, seconds;
+      const display = document.getElementById('countdown');
+      
+      if (timerInterval) clearInterval(timerInterval);
+
+      timerInterval = setInterval(() => {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
+
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
+
+        display.textContent = minutes + ":" + seconds;
+
+        if (--timer < 0) {
+          clearInterval(timerInterval);
+          display.textContent = "00:00 (Time Expired - Refresh if needed)";
+        }
+      }, 1000);
+    }
+
+    function handlePassChange() {
+      const passSelect = document.getElementById('passType');
+      const genderSelect = document.getElementById('gender');
+      const amountDisplay = document.getElementById('totalAmount');
+      const payButton = document.getElementById('payBtn');
+      const qrImage = document.getElementById('qrImage');
+      const paymentSectionWrapper = document.getElementById('paymentSectionWrapper');
+      
+      const price = passSelect.value;
+      const currentGender = genderSelect.value;
+
+      if (price === "499") {
+        genderSelect.innerHTML = `<option value="Female" selected>Female</option>`;
+      } else if (price === "299" || price === "399") {
+        genderSelect.innerHTML = `
+          <option value="" disabled>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        `;
+        if (currentGender === "Male" || currentGender === "Female" || currentGender === "Other") {
+          genderSelect.value = currentGender;
+        } else {
+          genderSelect.value = "";
+        }
+      } else {
+        genderSelect.innerHTML = `<option value="" disabled selected>Select pass type first</option>`;
+      }
+
+      if (price && price !== "") {
+        const selectedOptionText = passSelect.options[passSelect.selectedIndex].text;
+        const passName = selectedOptionText.split('-')[0].trim();
+
+        amountDisplay.textContent = '₹' + price;
+        payButton.textContent = 'PAY ₹' + price + ' VIA UPI APP';
+
+        const upiUrl = 'upi://pay?pa=' + upiId + '&pn=Navrang%20Garba&am=' + price + '&cu=INR&tn=' + encodeURIComponent(passName);
+        payButton.setAttribute('href', upiUrl);
+
+        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(upiUrl);
+        qrImage.src = qrApiUrl;
+
+        paymentSectionWrapper.style.display = 'block';
+        startTimer(120);
+
+      } else {
+        amountDisplay.textContent = '₹0';
+        paymentSectionWrapper.style.display = 'none';
+        if (timerInterval) clearInterval(timerInterval);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const passSelect = document.getElementById('passType');
+      passSelect.addEventListener('change', handlePassChange);
+
+      let supabaseClient = null;
+      if (typeof supabase !== 'undefined') {
+        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      }
+
+      const form = document.getElementById('registrationForm');
+      const statusMsg = document.getElementById('statusMsg');
+      const submitBtn = document.getElementById('submitBtn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!supabaseClient) {
+          statusMsg.style.color = "red";
+          statusMsg.innerText = "Error: Database connection failed. Reload page.";
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Checking UTR...";
+        statusMsg.style.color = "blue";
+        statusMsg.innerText = "Verifying transaction details...";
+
+        try {
+          const enteredUtr = document.getElementById('utr').value.trim();
+
+          const { data: existingUtrRows, error: checkError } = await supabaseClient
+            .from(TABLE_NAME)
+            .select('id, utr')
+            .eq('utr', enteredUtr);
+
+          if (checkError) throw checkError;
+
+          if (existingUtrRows && existingUtrRows.length > 0) {
+            statusMsg.style.color = "red";
+            statusMsg.innerText = "❌ This UTR / Transaction ID has already been used. Please enter a valid unique UTR.";
+            submitBtn.disabled = false;
+            submitBtn.innerText = "SUBMIT REGISTRATION";
+            return;
+          }
+
+          submitBtn.innerText = "Uploading Screenshot...";
+          statusMsg.innerText = "Uploading payment screenshot...";
+
+          const fileInput = document.getElementById('screenshot');
+          const file = fileInput.files[0];
+          const fileName = Date.now() + '_' + file.name;
+
+          const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            .from(BUCKET_NAME)
+            .upload(fileName, file);
+
+          if (uploadError) throw uploadError;
+
+          const { data: publicUrlData } = supabaseClient.storage
+            .from(BUCKET_NAME)
+            .getPublicUrl(fileName);
+
+          const screenshotUrl = publicUrlData.publicUrl;
+
+          submitBtn.innerText = "Submitting...";
+          statusMsg.innerText = "Finalizing registration...";
+
+          const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+          const exactISTString = new Date(nowIST).toISOString();
+
+          const { data, error: insertError } = await supabaseClient
+            .from(TABLE_NAME)
+            .insert([
+              {
+                full_name: document.getElementById('fullName').value,
+                phone: document.getElementById('phone').value,
+                gender: document.getElementById('gender').value,
+                dob: document.getElementById('dob').value,
+                pass_type: passSelect.options[passSelect.selectedIndex].text,
+                amount: document.getElementById('totalAmount').textContent,
+                utr: enteredUtr,
+                screenshot_url: screenshotUrl,
+                pass_status: 'pending',
+                created_at: exactISTString
+              }
+            ]);
+
+          if (insertError) throw insertError;
+
+          statusMsg.style.color = "green";
+          statusMsg.innerText = "Registration Successful!";
+          form.reset();
+          paymentSectionWrapper.style.display = 'none';
+          if (timerInterval) clearInterval(timerInterval);
+          handlePassChange();
+
+        } catch (err) {
+          console.error("Error:", err);
+          statusMsg.style.color = "red";
+          statusMsg.innerText = "Error: " + (err.message || "Failed to submit.");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "SUBMIT REGISTRATION";
+        }
+      });
+    });
+  </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navrang Garba 2.0 - Pass Registration</title>
+  
+  <!-- WhatsApp Preview Meta Tags -->
+  <meta property="og:title" content="Navrang Garba 2.0 - Pass Registration">
+  <meta property="og:description" content="Register now for Navrang Garba 2.0 and book your passes online easily!">
+  <meta property="og:type" content="website">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; padding: 20px; margin: 0; }
+    .form-container { background: #ffffff; padding: 25px; border-radius: 8px; width: 100%; max-width: 450px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .form-group { margin-bottom: 14px; }
+    label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 14px; }
+    select, input { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+    
+    /* Top Notice Box Styling */
+    .notice-box { background-color: #e8f4fd; border-left: 4px solid #007bff; padding: 10px 12px; border-radius: 4px; margin-bottom: 15px; font-size: 12px; color: #004085; line-height: 1.5; }
+    .notice-box strong { display: block; margin-bottom: 4px; font-size: 13px; color: #002752; }
+    .notice-box ul { margin: 0; padding-left: 16px; }
+    .notice-box li { margin-bottom: 4px; }
+
+    /* Special Delivery Timing Note */
     .delivery-note { background-color: #d4edda; border-left: 4px solid #28a745; color: #155724; padding: 10px 12px; border-radius: 4px; margin-bottom: 15px; font-size: 12px; line-height: 1.5; }
     .delivery-note strong { display: block; margin-bottom: 4px; font-size: 13px; color: #0f3916; }
 
