@@ -194,6 +194,27 @@
     let timerInterval = null;
     let hasPaidConfirmed = false;
 
+    // --- PAGE VISIT TRACKING (Background Logging) ---
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        if (typeof supabase !== 'undefined') {
+          const visitorClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+          const exactISTString = new Date(nowIST).toISOString();
+
+          await visitorClient.from('PageVisits').insert([
+            {
+              visited_at: exactISTString,
+              user_agent: navigator.userAgent
+            }
+          ]);
+        }
+      } catch (err) {
+        console.log("Visitor tracking skipped:", err);
+      }
+    });
+    // ------------------------------------------------
+
     function startTimer(duration) {
       let timer = duration, minutes, seconds;
       const display = document.getElementById('countdown');
@@ -216,7 +237,7 @@
       }, 1000);
     }
 
-    // Jab user "PAY VIA UPI APP" dabayega, tab confirmation box dikhega
+    // Jab user "PAY VIA UPI APP" dabayega, tab confirmation box dikheगा
     function showConfirmBox() {
       document.getElementById('confirmBox').style.display = 'block';
     }
