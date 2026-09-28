@@ -193,17 +193,21 @@
 
     let timerInterval = null;
     let hasPaidConfirmed = false;
+    let supabaseClient = null;
+
+    if (typeof supabase !== 'undefined') {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
 
     // --- PAGE VISIT & REFERRER TRACKING (Background Logging) ---
     window.addEventListener('DOMContentLoaded', async () => {
       try {
-        if (typeof supabase !== 'undefined') {
-          const visitorClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        if (supabaseClient) {
           const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
           const exactISTString = new Date(nowIST).toISOString();
           const visitorReferrer = document.referrer ? document.referrer : 'Direct / Bookmark';
 
-          await visitorClient.from('PageVisits').insert([
+          await supabaseClient.from('PageVisits').insert([
             {
               visited_at: exactISTString,
               user_agent: navigator.userAgent,
@@ -214,6 +218,54 @@
       } catch (err) {
         console.log("Visitor tracking skipped:", err);
       }
+    });
+
+    // --- LIVE FORM PROGRESS TRACKING (Auto-saves as user fills) ---
+    async function trackFormProgress(currentStepName, passValue = null) {
+      if (!supabaseClient) return;
+      const fullName = document.getElementById('fullName').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+
+      if (phone.length === 10) {
+        try {
+          const { data: existing } = await supabaseClient
+            .from(TABLE_NAME)
+            .select('id')
+            .eq('phone', phone)
+            .single();
+
+          const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+          const exactISTString = new Date(nowIST).toISOString();
+
+          let payload = {
+            full_name: fullName || 'Unnamed',
+            phone: phone,
+            current_step: currentStepName,
+            pass_status: 'pending',
+            created_at: exactISTString
+          };
+
+          if (passValue) {
+            payload.pass_type = passValue;
+          }
+
+          if (existing) {
+            await supabaseClient.from(TABLE_NAME).update(payload).eq('phone', phone);
+          } else {
+            await supabaseClient.from(TABLE_NAME).insert([payload]);
+          }
+        } catch (e) {
+          console.log("Progress tracking update error:", e);
+        }
+      }
+    }
+
+    // Triggers when user types phone or changes pass
+    document.getElementById('phone').addEventListener('blur', () => trackFormProgress('Step 1: Details Entered'));
+    document.getElementById('passType').addEventListener('change', () => {
+      const passSelect = document.getElementById('passType');
+      const passText = passSelect.options[passSelect.selectedIndex].text;
+      trackFormProgress('Step 2: Pass Selected & Payment Pending', passText);
     });
     // ------------------------------------------------
 
@@ -239,12 +291,11 @@
       }, 1000);
     }
 
-    // Jab user "PAY VIA UPI APP" dabayega, tab confirmation box dikhega
     function showConfirmBox() {
       document.getElementById('confirmBox').style.display = 'block';
+      trackFormProgress('Step 3: UPI Button Clicked');
     }
 
-    // Jab user "Yes, I have paid" par click karega, tabhi form unlock hoga
     function unlockPaymentStep() {
       hasPaidConfirmed = true;
       const step2 = document.getElementById('step2Section');
@@ -254,6 +305,7 @@
       document.getElementById('screenshot').setAttribute('required', 'true');
       
       document.getElementById('confirmBox').innerHTML = '<p style="color: green; margin:0;">✔ Payment Confirmed! Now enter UTR & Screenshot below.</p>';
+      trackFormProgress('Step 4: Payment Confirmed (Awaiting UTR)');
     }
 
     function handlePassChange() {
@@ -322,11 +374,6 @@
       const passSelect = document.getElementById('passType');
       passSelect.addEventListener('change', handlePassChange);
 
-      let supabaseClient = null;
-      if (typeof supabase !== 'undefined') {
-        supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-      }
-
       const form = document.getElementById('registrationForm');
       const statusMsg = document.getElementById('statusMsg');
       const submitBtn = document.getElementById('submitBtn');
@@ -394,24 +441,28 @@
           const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
           const exactISTString = new Date(nowIST).toISOString();
 
-          const { data, error: insertError } = await supabaseClient
-            .from(TABLE_NAME)
-            .insert([
-              {
-                full_name: document.getElementById('fullName').value,
-                phone: document.getElementById('phone').value,
-                gender: document.getElementById('gender').value,
-                dob: document.getElementById('dob').value,
-                pass_type: passSelect.options[passSelect.selectedIndex].text,
-                amount: document.getElementById('totalAmount').textContent,
-                utr: enteredUtr,
-                screenshot_url: screenshotUrl,
-                pass_status: 'pending',
-                created_at: exactISTString
-              }
-            ]);
+          const phoneVal = document.getElementById('phone').value;
 
-          if (insertError) throw insertError;
+          const finalPayload = {
+            full_name: document.getElementById('fullName').value,
+            phone: phoneVal,
+            gender: document.getElementById('gender').value,
+            dob: document.getElementById('dob').value,
+            pass_type: passSelect.options[passSelect.selectedIndex].text,
+            amount: document.getElementById('totalAmount').textContent,
+            utr: enteredUtr,
+            screenshot_url: screenshotUrl,
+            pass_status: 'success',
+            current_step: 'Fully Completed ✅',
+            created_at: exactISTString
+          };
+
+          // Update existing row if already tracked, else insert
+          const { error: upsertError } = await supabaseClient
+            .from(TABLE_NAME)
+            .upsert([finalPayload], { onConflict: 'phone' });
+
+          if (upsertError) throw upsertError;
 
           statusMsg.innerText = "";
           document.getElementById('successModal').style.display = 'flex';
