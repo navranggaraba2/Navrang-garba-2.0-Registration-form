@@ -320,7 +320,7 @@
         genderSelect.innerHTML = `<option value="Female" selected>Female</option>`;
       } else if (price === "299" || price === "399") {
         genderSelect.innerHTML = `
-          <option value="" disabled>Select Gender</option>
+          <option value="" disabled selected>Select Gender</option>
           <option value="Male">Male</option>
           <option value="Female">Female</option>
           <option value="Other">Other</option>
@@ -419,7 +419,7 @@
           const fileInput = document.getElementById('screenshot');
           let file = fileInput.files[0];
 
-          // Compress image to prevent HTTP 520 / payload too large errors
+          // Compress image to prevent HTTP 520 errors
           const options = {
             maxSizeMB: 0.5,
             maxWidthOrHeight: 1024,
@@ -481,4 +481,15 @@
           document.getElementById('successModal').style.display = 'flex';
 
         } catch (err) {
-          console.er
+          console.error("Error:", err);
+          statusMsg.style.color = "red";
+          statusMsg.innerText = "Error: " + (err.message || "Failed to submit.");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "SUBMIT REGISTRATION";
+        }
+      });
+    });
+  </script>
+</body>
+</html>
