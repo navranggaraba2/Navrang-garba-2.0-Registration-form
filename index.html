@@ -36,7 +36,7 @@
     .upi-info { text-align: center; font-size: 13px; color: #555; margin-bottom: 10px; }
     .qr-container { text-align: center; margin: 10px 0; padding: 8px; background: #fafafa; border: 1px dashed #ccc; border-radius: 6px; }
     .qr-container img { width: 150px; height: 150px; margin-top: 6px; border-radius: 4px; }
-    .qr-text { font-size: 11px; color: #666; margin-top: 4px; }
+    .qr-text { font-size: 12px; color: #333; margin-top: 6px; font-weight: bold; }
 
     .confirm-payment-box { margin-top: 10px; padding: 10px; background: #e2f0d9; border: 1px solid #c8e1b7; border-radius: 6px; text-align: center; }
     .confirm-payment-box p { font-size: 12px; color: #274e13; margin-bottom: 8px; font-weight: bold; }
@@ -117,7 +117,7 @@
       <!-- Payment Section -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         <div class="notice-box" style="margin-bottom: 10px; background-color: #fff3cd; border-color: #ffc107; color: #856404;">
-          <strong>⚡ Step 1:</strong> नीचे दिए गए QR Code को अपने किसी भी UPI ऐप से स्कैन करके पेमेंट करें, फिर <b>'Yes, I have paid'</b> वाले बटन को दबाएं!
+          <strong>⚡ Step 1:</strong> नीचे दिए गए QR Code को स्कैन करके पेमेंट करें, फिर <b>'Yes, I have paid'</b> वाले बटन को दबाएं!
         </div>
 
         <div class="timer-box">
@@ -129,9 +129,9 @@
         </div>
 
         <div id="qrBox" class="qr-container">
-          <span style="font-size: 12px; font-weight: bold; color: #333;">Scan with Paytm, PhonePe, or GPay</span><br>
+          <span style="font-size: 13px; font-weight: bold; color: #007bff;">📱 Scan this QR Code & Pay via any UPI App</span><br>
           <img id="qrImage" src="" alt="UPI QR Code">
-          <div class="qr-text">Scan this QR code using any UPI app</div>
+          <div class="qr-text">Open PhonePe, GPay, or Paytm and scan to pay</div>
         </div>
 
         <!-- Payment Confirmation Box -->
@@ -325,7 +325,7 @@
 
         amountDisplay.textContent = '₹' + price;
 
-        // UPI link for QR generation only
+        // UPI link embedded in QR code only
         const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
         
         const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(upiUrl);
