@@ -337,7 +337,8 @@
         amountDisplay.textContent = '₹' + price;
         payButton.textContent = 'PAY ₹' + price + ' VIA UPI APP';
 
-        const upiUrl = 'upi://pay?pa=' + upiId + '&pn=Navrang%20Garba&am=' + price + '&cu=INR&tn=' + encodeURIComponent(passName);
+        // Optimized UPI link for mobile app triggers
+        const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
         payButton.setAttribute('href', upiUrl);
 
         const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(upiUrl);
@@ -419,7 +420,6 @@
           const fileInput = document.getElementById('screenshot');
           let file = fileInput.files[0];
 
-          // Compress image to prevent HTTP 520 errors
           const options = {
             maxSizeMB: 0.5,
             maxWidthOrHeight: 1024,
