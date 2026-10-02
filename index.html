@@ -38,11 +38,9 @@
     .qr-container img { width: 150px; height: 150px; margin-top: 6px; border-radius: 4px; }
     .qr-text { font-size: 11px; color: #666; margin-top: 4px; }
 
-    .pay-btn { width: 100%; padding: 11px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; text-decoration: none; display: inline-block; text-align: center; box-sizing: border-box; margin-bottom: 8px; }
-    
-    .confirm-payment-box { margin-top: 10px; padding: 10px; background: #e2f0d9; border: 1px solid #c8e1b7; border-radius: 6px; display: none; text-align: center; }
+    .confirm-payment-box { margin-top: 10px; padding: 10px; background: #e2f0d9; border: 1px solid #c8e1b7; border-radius: 6px; text-align: center; }
     .confirm-payment-box p { font-size: 12px; color: #274e13; margin-bottom: 8px; font-weight: bold; }
-    .confirm-btn { background-color: #38761d; color: white; border: none; padding: 8px 12px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+    .confirm-btn { background-color: #38761d; color: white; border: none; padding: 8px 12px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; }
 
     .step-2 { margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; opacity: 0.5; pointer-events: none; transition: 0.3s; }
     .step-2.active { opacity: 1; pointer-events: auto; }
@@ -71,7 +69,7 @@
       <ul>
         <li>Participant Pass is strictly for <strong>Female</strong> participants only.</li>
         <li>Audience & Freestyle Passes are available for <strong>All (Male, Female, Other)</strong>.</li>
-        <li><strong>Only UPI / QR Scanner</strong> is the accepted payment method for booking passes.</li>
+        <li><strong>Only UPI QR Scanner</strong> is the accepted payment method for booking passes.</li>
         <li>One pass is valid for <strong>one person only</strong>.</li>
         <li>Please submit your UTR / payment screenshot within <strong>10 minutes</strong> of completing the payment.</li>
       </ul>
@@ -119,7 +117,7 @@
       <!-- Payment Section -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         <div class="notice-box" style="margin-bottom: 10px; background-color: #fff3cd; border-color: #ffc107; color: #856404;">
-          <strong>⚡ Step 1:</strong> पहले UPI ऐप वाले बटन पर क्लिक करके पेमेंट करें, फिर नीचे <b>'Yes, I have paid'</b> वाले बटन को दबाएं!
+          <strong>⚡ Step 1:</strong> नीचे दिए गए QR Code को अपने किसी भी UPI ऐप से स्कैन करके पेमेंट करें, फिर <b>'Yes, I have paid'</b> वाले बटन को दबाएं!
         </div>
 
         <div class="timer-box">
@@ -136,12 +134,9 @@
           <div class="qr-text">Scan this QR code using any UPI app</div>
         </div>
 
-        <!-- Pay Button -->
-        <a id="payBtn" class="pay-btn" href="#" target="_blank" onclick="showConfirmBox()">PAY VIA UPI APP</a>
-
         <!-- Payment Confirmation Box -->
         <div id="confirmBox" class="confirm-payment-box">
-          <p>Kya aapne payment poora kar liya hai?</p>
+          <p>Kya aapne QR scan karke payment poora kar liya hai?</p>
           <button type="button" class="confirm-btn" onclick="unlockPaymentStep()">Yes, I have paid ✅</button>
         </div>
       </div>
@@ -288,11 +283,6 @@
       }, 1000);
     }
 
-    function showConfirmBox() {
-      document.getElementById('confirmBox').style.display = 'block';
-      trackFormProgress('Step 3: UPI Button Clicked');
-    }
-
     function unlockPaymentStep() {
       hasPaidConfirmed = true;
       const step2 = document.getElementById('step2Section');
@@ -309,7 +299,6 @@
       const passSelect = document.getElementById('passType');
       const genderSelect = document.getElementById('gender');
       const amountDisplay = document.getElementById('totalAmount');
-      const payButton = document.getElementById('payBtn');
       const qrImage = document.getElementById('qrImage');
       const paymentSectionWrapper = document.getElementById('paymentSectionWrapper');
       
@@ -335,12 +324,10 @@
         const passName = selectedOptionText.split('-')[0].trim();
 
         amountDisplay.textContent = '₹' + price;
-        payButton.textContent = 'PAY ₹' + price + ' VIA UPI APP';
 
-        // Optimized UPI link for mobile app triggers
+        // UPI link for QR generation only
         const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
-        payButton.setAttribute('href', upiUrl);
-
+        
         const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(upiUrl);
         qrImage.src = qrApiUrl;
 
@@ -351,7 +338,6 @@
         amountDisplay.textContent = '₹0';
         paymentSectionWrapper.style.display = 'none';
         document.getElementById('step2Section').classList.remove('active');
-        document.getElementById('confirmBox').style.display = 'none';
         if (timerInterval) clearInterval(timerInterval);
       }
     }
@@ -361,7 +347,6 @@
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentSectionWrapper').style.display = 'none';
       document.getElementById('step2Section').classList.remove('active');
-      document.getElementById('confirmBox').style.display = 'none';
       document.getElementById('statusMsg').innerText = '';
       hasPaidConfirmed = false;
       if (timerInterval) clearInterval(timerInterval);
