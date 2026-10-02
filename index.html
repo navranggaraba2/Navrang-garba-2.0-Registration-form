@@ -124,7 +124,7 @@
         <div class="amount-value" id="totalAmount">₹0</div>
       </div>
 
-      <!-- Payment Section (Appears immediately when pass is selected) -->
+      <!-- Payment Section (Appears immediately when pass is selected, fully visible with no hidden steps) -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         <div class="timer-box">
           ⏳ Payment Session Expires in: <span id="countdown">02:00</span>
@@ -141,9 +141,9 @@
         </div>
 
         <!-- Scan and Pay Button -->
-        <button type="button" id="scanAndPayBtn" class="scan-pay-btn" onclick="openUpiApp()">⚡ SCAN AND PAY</button>
+        <button type="button" id="scanAndPayBtn" class="scan-pay-btn" onclick="openUpiApp()">⚡ SCAN & PAY (OPEN UPI APP)</button>
 
-        <!-- UTR and Screenshot Section -->
+        <!-- UTR and Screenshot Section (Directly Visible & Required) -->
         <div class="form-group">
           <label for="utr">UTR / Transaction ID (12-digit required)</label>
           <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12" required>
