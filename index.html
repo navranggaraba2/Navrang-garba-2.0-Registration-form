@@ -45,10 +45,11 @@
     .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 6px; border: 1px solid #eee; }
     .qr-text { font-size: 11px; color: #6d4c41; margin-top: 6px; }
 
-    .download-qr-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; margin-bottom: 14px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); transition: opacity 0.2s; }
+    .download-qr-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; margin-bottom: 6px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); transition: opacity 0.2s; }
     .download-qr-btn:hover { opacity: 0.95; }
 
-    .step-2 { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #d7ccc8; }
+    /* Initially Hidden Step 2 */
+    .step-2 { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #d7ccc8; display: none; }
 
     .submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3); transition: opacity 0.2s; }
     .submit-btn:hover { opacity: 0.95; }
@@ -128,7 +129,7 @@
       <!-- Payment Section -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         <div class="notice-box" style="margin-bottom: 12px; background-color: #fef3c7; border-color: #d97706; color: #78350f;">
-          <strong>⚡ Step 1:</strong> Is button par click karte hi QR download hoga aur Google Pay / UPI app khul jayegi! Payment karke apna 12-digit UTR aur Screenshot upload karein.
+          <strong>⚡ Step 1:</strong> Pehle <b>'Download QR Code & Open UPI'</b> par click karein. Uske baad hi niche UTR aur Screenshot ka option khulega!
         </div>
 
         <div class="timer-box">
@@ -145,19 +146,23 @@
           <div class="qr-text">Scan or download QR to pay</div>
         </div>
 
-        <!-- Download QR & Pay Button with Combined Action -->
+        <!-- Download QR & Pay Button -->
         <button type="button" id="downloadAndPayBtn" class="download-qr-btn" onclick="downloadQrAndOpenUpi()">📥 Download QR Code & Open Google Pay / UPI</button>
 
-        <!-- Step 2: UTR & Screenshot (Mandatory) -->
-        <div class="step-2">
+        <!-- Step 2: UTR & Screenshot (Hidden Initially) -->
+        <div id="step2Section" class="step-2">
+          <div class="notice-box" style="margin-bottom: 12px; background-color: #ecfdf5; border-color: #10b981; color: #065f46;">
+            ✅ QR download ho gaya hai! Ab payment karke apna 12-digit UTR aur Screenshot yahan upload karein.
+          </div>
+
           <div class="form-group">
             <label for="utr">UTR / Transaction ID (12-digit required)</label>
-            <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12" required>
+            <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12">
           </div>
 
           <div class="form-group">
             <label for="screenshot">Payment Screenshot (Required)</label>
-            <input type="file" id="screenshot" accept="image/*" required>
+            <input type="file" id="screenshot" accept="image/*">
           </div>
 
           <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
@@ -301,6 +306,11 @@
       const price = passSelect.value;
       const currentGender = genderSelect.value;
 
+      // Hide step 2 on pass change reset
+      document.getElementById('step2Section').style.display = 'none';
+      document.getElementById('utr').removeAttribute('required');
+      document.getElementById('screenshot').removeAttribute('required');
+
       if (price === "499") {
         genderSelect.innerHTML = `<option value="Female" selected>Female</option>`;
       } else if (price === "299" || price === "399") {
@@ -339,6 +349,7 @@
     function downloadQrAndOpenUpi() {
       trackFormProgress('Step 3: QR Downloaded & UPI Triggered');
 
+      // 1. Download QR Code
       const qrImageSrc = document.getElementById('qrImage').src;
       const a = document.createElement('a');
       a.href = qrImageSrc;
@@ -347,15 +358,26 @@
       a.click();
       document.body.removeChild(a);
 
+      // 2. Open UPI App
       if (currentUpiUrl) {
         window.location.href = currentUpiUrl;
       }
+
+      // 3. Reveal Step 2 (UTR and Screenshot fields) and make them required
+      const step2 = document.getElementById('step2Section');
+      step2.style.display = 'block';
+      document.getElementById('utr').setAttribute('required', 'true');
+      document.getElementById('screenshot').setAttribute('required', 'true');
+
+      // Smooth scroll to step 2 for better user experience
+      step2.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeModalAndReset() {
       document.getElementById('successModal').style.display = 'none';
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentSectionWrapper').style.display = 'none';
+      document.getElementById('step2Section').style.display = 'none';
       document.getElementById('statusMsg').innerText = '';
       if (timerInterval) clearInterval(timerInterval);
       handlePassChange();
