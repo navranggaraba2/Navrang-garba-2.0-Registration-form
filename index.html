@@ -14,57 +14,59 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.js"></script>
 
   <style>
-    body { font-family: Arial, sans-serif; background-color: #f4f6f8; display: flex; justify-content: center; padding: 20px; margin: 0; }
-    .form-container { background: #ffffff; padding: 25px; border-radius: 8px; width: 100%; max-width: 450px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-    .form-group { margin-bottom: 14px; }
-    label { display: block; font-weight: bold; margin-bottom: 5px; color: #333; font-size: 14px; }
-    select, input { width: 100%; padding: 9px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #fdfbf7 0%, #f4ebd0 100%); display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh; align-items: center; }
+    .form-container { background: #ffffff; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 8px 24px rgba(62, 39, 35, 0.12); border-top: 5px solid #d97706; }
     
-    .notice-box { background-color: #e8f4fd; border-left: 4px solid #007bff; padding: 10px 12px; border-radius: 4px; margin-bottom: 15px; font-size: 12px; color: #004085; line-height: 1.5; }
-    .notice-box strong { display: block; margin-bottom: 4px; font-size: 13px; color: #002752; }
+    h2 { color: #3e2723; text-align: center; margin-top: 0; margin-bottom: 16px; font-weight: 700; letter-spacing: 0.5px; }
+    
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; color: #4e342e; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+    select, input { width: 100%; padding: 10px 12px; border: 1.5px solid #d7ccc8; border-radius: 8px; box-sizing: border-box; font-size: 14px; background-color: #faf8f5; color: #3e2723; transition: all 0.3s ease; }
+    select:focus, input:focus { outline: none; border-color: #d97706; background-color: #fff; box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15); }
+    
+    .notice-box { background-color: #fffbeb; border-left: 4px solid #d97706; padding: 12px 14px; border-radius: 6px; margin-bottom: 18px; font-size: 12px; color: #78350f; line-height: 1.5; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); }
+    .notice-box strong { display: block; margin-bottom: 4px; font-size: 13px; color: #451a03; }
     .notice-box ul { margin: 0; padding-left: 16px; }
     .notice-box li { margin-bottom: 4px; }
 
-    .amount-box { background-color: #eef3f8; text-align: center; padding: 12px; border-radius: 6px; margin: 12px 0; }
-    .amount-title { font-size: 13px; color: #666; }
-    .amount-value { font-size: 24px; font-weight: bold; color: #111; margin-top: 3px; }
+    .amount-box { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); text-align: center; padding: 14px; border-radius: 8px; margin: 16px 0; border: 1px solid #ffe082; }
+    .amount-title { font-size: 12px; color: #795548; font-weight: 600; text-transform: uppercase; }
+    .amount-value { font-size: 26px; font-weight: 800; color: #3e2723; margin-top: 4px; }
     
-    .payment-section-wrapper { border: 2px dashed #007bff; padding: 12px; border-radius: 8px; background: #fbfdff; margin-top: 12px; display: none; }
-    .timer-box { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 6px; border-radius: 4px; text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 10px; }
-    .timer-box span { color: #d9534f; font-size: 14px; }
+    .payment-section-wrapper { border: 2px dashed #d97706; padding: 16px; border-radius: 10px; background: #fffdf9; margin-top: 15px; display: none; }
+    .timer-box { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 8px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 12px; }
+    .timer-box span { color: #b45309; font-size: 14px; }
 
-    .upi-info { text-align: center; font-size: 13px; color: #555; margin-bottom: 10px; }
-    .qr-container { text-align: center; margin: 10px 0; padding: 8px; background: #fafafa; border: 1px dashed #ccc; border-radius: 6px; }
-    .qr-container img { width: 150px; height: 150px; margin-top: 6px; border-radius: 4px; }
-    .qr-text { font-size: 11px; color: #666; margin-top: 4px; }
+    .upi-info { text-align: center; font-size: 13px; color: #5d4037; margin-bottom: 12px; font-weight: 500; }
+    .qr-container { text-align: center; margin: 10px 0; padding: 12px; background: #ffffff; border: 1px solid #e7e0d8; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 6px; border: 1px solid #eee; }
+    .qr-text { font-size: 11px; color: #6d4c41; margin-top: 6px; }
 
-    .download-qr-btn { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 8px; margin-bottom: 8px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; }
+    .download-qr-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; margin-bottom: 14px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); transition: opacity 0.2s; }
+    .download-qr-btn:hover { opacity: 0.95; }
 
-    .confirm-payment-box { margin-top: 10px; padding: 10px; background: #e2f0d9; border: 1px solid #c8e1b7; border-radius: 6px; display: none; text-align: center; }
-    .confirm-payment-box p { font-size: 12px; color: #274e13; margin-bottom: 8px; font-weight: bold; }
-    .confirm-btn { background-color: #38761d; color: white; border: none; padding: 8px 12px; font-size: 12px; font-weight: bold; border-radius: 4px; cursor: pointer; width: 100%; }
+    .step-2 { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #d7ccc8; }
 
-    .step-2 { margin-top: 20px; padding-top: 15px; border-top: 2px dashed #ddd; opacity: 0.5; pointer-events: none; transition: 0.3s; }
-    .step-2.active { opacity: 1; pointer-events: auto; }
+    .submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3); transition: opacity 0.2s; }
+    .submit-btn:hover { opacity: 0.95; }
+    .submit-btn:disabled { background: #bcaaa4; cursor: not-allowed; box-shadow: none; }
+    
+    #statusMsg { margin-top: 14px; text-align: center; font-weight: bold; font-size: 13px; }
 
-    .submit-btn { width: 100%; padding: 12px; background-color: #28a745; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 8px; }
-    .submit-btn:disabled { background-color: #94d3a2; cursor: not-allowed; }
-    #statusMsg { margin-top: 12px; text-align: center; font-weight: bold; font-size: 13px; }
-
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; }
-    .modal-box { background: #fff; padding: 25px; border-radius: 10px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: scaleUp 0.3s ease-in-out; }
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(62, 39, 35, 0.65); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; backdrop-filter: blur(3px); }
+    .modal-box { background: #fff; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-top: 5px solid #d97706; animation: scaleUp 0.3s ease-in-out; }
     @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .modal-icon { font-size: 45px; color: #28a745; margin-bottom: 10px; }
-    .modal-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 15px; }
-    .modal-text-eng { font-size: 13px; color: #444; line-height: 1.5; margin-bottom: 12px; background: #f8f9fa; padding: 10px; border-radius: 6px; border-left: 4px solid #007bff; text-align: left; }
-    .modal-text-hin { font-size: 13px; color: #444; line-height: 1.5; margin-bottom: 20px; background: #fff3cd; padding: 10px; border-radius: 6px; border-left: 4px solid #ffc107; text-align: left; }
-    .modal-btn { background-color: #28a745; color: white; border: none; padding: 10px 20px; font-size: 14px; font-weight: bold; border-radius: 6px; cursor: pointer; width: 100%; }
+    .modal-icon { font-size: 48px; color: #d97706; margin-bottom: 10px; }
+    .modal-title { font-size: 18px; font-weight: bold; color: #3e2723; margin-bottom: 15px; }
+    .modal-text-eng { font-size: 13px; color: #4e342e; line-height: 1.5; margin-bottom: 12px; background: #fff8e1; padding: 10px; border-radius: 6px; border-left: 4px solid #d97706; text-align: left; }
+    .modal-text-hin { font-size: 13px; color: #4e342e; line-height: 1.5; margin-bottom: 20px; background: #fef3c7; padding: 10px; border-radius: 6px; border-left: 4px solid #b45309; text-align: left; }
+    .modal-btn { background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; padding: 11px 20px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(62, 39, 35, 0.2); }
   </style>
 </head>
 <body>
 
   <div class="form-container">
-    <h2 style="text-align: center; margin-top: 0; margin-bottom: 12px; color: #333;">Navrang Garba 2.0</h2>
+    <h2>Navrang Garba 2.0</h2>
 
     <div class="notice-box">
       <strong>📌 Important Guidelines & Rules:</strong>
@@ -118,8 +120,8 @@
 
       <!-- Payment Section -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
-        <div class="notice-box" style="margin-bottom: 10px; background-color: #fff3cd; border-color: #ffc107; color: #856404;">
-          <strong>⚡ Step 1:</strong> Pehle <b>'Download QR Code'</b> button par click karke QR save karein aur payment poora karein!
+        <div class="notice-box" style="margin-bottom: 12px; background-color: #fef3c7; border-color: #d97706; color: #78350f;">
+          <strong>⚡ Step 1:</strong> Pehle <b>'Download QR Code'</b> karke payment karein, phir niche apna 12-digit UTR aur Screenshot upload karke form submit karein!
         </div>
 
         <div class="timer-box">
@@ -131,34 +133,28 @@
         </div>
 
         <div id="qrBox" class="qr-container">
-          <span style="font-size: 12px; font-weight: bold; color: #333;">Scan with Paytm, PhonePe, or GPay</span><br>
+          <span style="font-size: 12px; font-weight: bold; color: #4e342e;">Scan with Paytm, PhonePe, or GPay</span><br>
           <img id="qrImage" src="" alt="UPI QR Code">
           <div class="qr-text">Scan or download QR to pay</div>
         </div>
 
         <!-- Download QR Button -->
-        <a id="downloadQrBtn" class="download-qr-btn" href="#" download="Navrang_Garba_QR.png" onclick="handleDownloadAndShowConfirm()">📥 Download QR Code & Pay</a>
+        <a id="downloadQrBtn" class="download-qr-btn" href="#" download="Navrang_Garba_QR.png" onclick="trackFormProgress('Step 3: QR Downloaded')">📥 Download QR Code & Pay</a>
 
-        <!-- Payment Confirmation Box -->
-        <div id="confirmBox" class="confirm-payment-box">
-          <p>Kya aapne payment poora kar liya hai?</p>
-          <button type="button" class="confirm-btn" onclick="unlockPaymentStep()">Yes, I have paid ✅</button>
+        <!-- Step 2: UTR & Screenshot (Mandatory) -->
+        <div class="step-2">
+          <div class="form-group">
+            <label for="utr">UTR / Transaction ID (12-digit required)</label>
+            <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12" required>
+          </div>
+
+          <div class="form-group">
+            <label for="screenshot">Payment Screenshot (Required)</label>
+            <input type="file" id="screenshot" accept="image/*" required>
+          </div>
+
+          <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
         </div>
-      </div>
-
-      <!-- Step 2: UTR & Screenshot -->
-      <div id="step2Section" class="step-2">
-        <div class="form-group">
-          <label for="utr">UTR / Transaction ID (After Payment)</label>
-          <input type="text" id="utr" placeholder="Enter 12-digit UTR ID">
-        </div>
-
-        <div class="form-group">
-          <label for="screenshot">Payment Screenshot</label>
-          <input type="file" id="screenshot" accept="image/*">
-        </div>
-
-        <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
       </div>
 
       <div id="statusMsg"></div>
@@ -168,7 +164,7 @@
   <!-- Success Popup Modal -->
   <div id="successModal" class="modal-overlay">
     <div class="modal-box">
-      <div class="modal-icon">✅</div>
+      <div class="modal-icon">🎉</div>
       <div class="modal-title">Registration Successful!</div>
       
       <div class="modal-text-eng">
@@ -193,7 +189,6 @@
     const upiId = "Navranggarba2.0@ybl";
 
     let timerInterval = null;
-    let hasPaidConfirmed = false;
     let supabaseClient = null;
 
     if (typeof supabase !== 'undefined') {
@@ -288,23 +283,6 @@
       }, 1000);
     }
 
-    function handleDownloadAndShowConfirm() {
-      document.getElementById('confirmBox').style.display = 'block';
-      trackFormProgress('Step 3: QR Downloaded / Payment Initiated');
-    }
-
-    function unlockPaymentStep() {
-      hasPaidConfirmed = true;
-      const step2 = document.getElementById('step2Section');
-      step2.classList.add('active');
-      
-      document.getElementById('utr').setAttribute('required', 'true');
-      document.getElementById('screenshot').setAttribute('required', 'true');
-      
-      document.getElementById('confirmBox').innerHTML = '<p style="color: green; margin:0;">✔ Payment Confirmed! Now enter UTR & Screenshot below.</p>';
-      trackFormProgress('Step 4: Payment Confirmed (Awaiting UTR)');
-    }
-
     function handlePassChange() {
       const passSelect = document.getElementById('passType');
       const genderSelect = document.getElementById('gender');
@@ -348,8 +326,6 @@
       } else {
         amountDisplay.textContent = '₹0';
         paymentSectionWrapper.style.display = 'none';
-        document.getElementById('step2Section').classList.remove('active');
-        document.getElementById('confirmBox').style.display = 'none';
         if (timerInterval) clearInterval(timerInterval);
       }
     }
@@ -358,10 +334,7 @@
       document.getElementById('successModal').style.display = 'none';
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentSectionWrapper').style.display = 'none';
-      document.getElementById('step2Section').classList.remove('active');
-      document.getElementById('confirmBox').style.display = 'none';
       document.getElementById('statusMsg').innerText = '';
-      hasPaidConfirmed = false;
       if (timerInterval) clearInterval(timerInterval);
       handlePassChange();
     }
@@ -377,9 +350,10 @@
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        if (!hasPaidConfirmed) {
-          statusMsg.style.color = "red";
-          statusMsg.innerText = "⚠️️ Pehle 'Download QR Code' karke payment karein aur 'Yes, I have paid' button dabayein!";
+        const enteredUtr = document.getElementById('utr').value.trim();
+        if (enteredUtr.length !== 12) {
+          statusMsg.style.color = "#b45309";
+          statusMsg.innerText = "⚠️ Kripya valid 12-digit UTR / Transaction ID hi enter karein!";
           return;
         }
 
@@ -391,12 +365,10 @@
 
         submitBtn.disabled = true;
         submitBtn.innerText = "Checking UTR...";
-        statusMsg.style.color = "blue";
+        statusMsg.style.color = "#d97706";
         statusMsg.innerText = "Verifying transaction details...";
 
         try {
-          const enteredUtr = document.getElementById('utr').value.trim();
-
           const { data: existingUtrRows, error: checkError } = await supabaseClient
             .from(TABLE_NAME)
             .select('id, utr')
