@@ -45,8 +45,9 @@
     .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 6px; border: 1px solid #eee; }
     .qr-text { font-size: 11px; color: #6d4c41; margin-top: 6px; }
 
-    .download-qr-btn { width: 100%; padding: 11px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; margin-bottom: 6px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); transition: opacity 0.2s; }
-    .download-qr-btn:hover { opacity: 0.95; }
+    .download-qr-btn { width: 100%; padding: 10px; background: linear-gradient(135deg, #795548 0%, #5d4037 100%); color: white; border: none; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 8px; margin-bottom: 10px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; }
+    
+    .proceed-pay-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; margin-bottom: 6px; display: block; text-align: center; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); }
 
     /* Initially Hidden Step 2 */
     .step-2 { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #d7ccc8; display: none; }
@@ -129,7 +130,7 @@
       <!-- Payment Section -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         <div class="notice-box" style="margin-bottom: 12px; background-color: #fef3c7; border-color: #d97706; color: #78350f;">
-          <strong>⚡ Step 1:</strong> Pehle <b>'Download QR Code & Open UPI'</b> par click karein. Uske baad hi niche UTR aur Screenshot ka option khulega!
+          <strong>⚡ Step 1:</strong> Is QR code ko scan karke payment karein. Payment karne ke baad <b>'I have paid & want to enter UTR'</b> button par click karein!
         </div>
 
         <div class="timer-box">
@@ -141,18 +142,21 @@
         </div>
 
         <div id="qrBox" class="qr-container">
-          <span style="font-size: 12px; font-weight: bold; color: #4e342e;">Scan with Paytm, PhonePe, or GPay</span><br>
+          <span style="font-size: 12px; font-weight: bold; color: #4e342e;">Scan with GPay, PhonePe, or Paytm</span><br>
           <img id="qrImage" src="" alt="UPI QR Code">
-          <div class="qr-text">Scan or download QR to pay</div>
+          <div class="qr-text">Scan via any UPI app to pay</div>
         </div>
 
-        <!-- Download QR & Pay Button -->
-        <button type="button" id="downloadAndPayBtn" class="download-qr-btn" onclick="downloadQrAndOpenUpi()">📥 Download QR Code & Open Google Pay / UPI</button>
+        <!-- Optional Download QR Button -->
+        <button type="button" class="download-qr-btn" onclick="downloadQrCode()">📥 Download QR Code</button>
+
+        <!-- Proceed Button to reveal UTR & Screenshot -->
+        <button type="button" class="proceed-pay-btn" onclick="revealUtrSection()">✅ Payment Done? Enter UTR & Screenshot</button>
 
         <!-- Step 2: UTR & Screenshot (Hidden Initially) -->
         <div id="step2Section" class="step-2">
           <div class="notice-box" style="margin-bottom: 12px; background-color: #ecfdf5; border-color: #10b981; color: #065f46;">
-            ✅ QR download ho gaya hai! Ab payment karke apna 12-digit UTR aur Screenshot yahan upload karein.
+            ✅ Ab apna 12-digit UTR aur Payment Screenshot yahan upload karke form submit karein.
           </div>
 
           <div class="form-group">
@@ -202,7 +206,6 @@
 
     let timerInterval = null;
     let supabaseClient = null;
-    let currentUpiUrl = "";
 
     if (typeof supabase !== 'undefined') {
       supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -331,9 +334,9 @@
 
         amountDisplay.textContent = '₹' + price;
 
-        currentUpiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
+        const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
         
-        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(currentUpiUrl);
+        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(upiUrl);
         qrImage.src = qrApiUrl;
 
         paymentSectionWrapper.style.display = 'block';
@@ -346,10 +349,8 @@
       }
     }
 
-    function downloadQrAndOpenUpi() {
-      trackFormProgress('Step 3: QR Downloaded & UPI Triggered');
-
-      // 1. Download QR Code Safely
+    function downloadQrCode() {
+      trackFormProgress('Step 3: QR Downloaded');
       const qrImageSrc = document.getElementById('qrImage').src;
       const a = document.createElement('a');
       a.href = qrImageSrc;
@@ -357,23 +358,14 @@
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+    }
 
-      // 2. Open UPI App Safely without Chrome ERR_UNKNOWN_URL_SCHEME
-      if (currentUpiUrl) {
-        const upiLink = document.createElement('a');
-        upiLink.href = currentUpiUrl;
-        document.body.appendChild(upiLink);
-        upiLink.click();
-        document.body.removeChild(upiLink);
-      }
-
-      // 3. Reveal Step 2 (UTR and Screenshot fields) and make them required
+    function revealUtrSection() {
+      trackFormProgress('Step 4: Proceeded to UTR Input');
       const step2 = document.getElementById('step2Section');
       step2.style.display = 'block';
       document.getElementById('utr').setAttribute('required', 'true');
       document.getElementById('screenshot').setAttribute('required', 'true');
-
-      // Smooth scroll to step 2 for better user experience
       step2.scrollIntoView({ behavior: 'smooth' });
     }
 
