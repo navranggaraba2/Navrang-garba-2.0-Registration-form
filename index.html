@@ -45,6 +45,9 @@
     .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 6px; border: 1px solid #eee; }
     .qr-text { font-size: 11px; color: #6d4c41; margin-top: 6px; }
 
+    /* Scan & Pay sirf display ke liye, non-clickable */
+    .scan-pay-display { width: 100%; padding: 12px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border-radius: 8px; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-top: 10px; margin-bottom: 14px; display: block; text-align: center; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); cursor: default; user-select: none; }
+
     .submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3); transition: opacity 0.2s; }
     .submit-btn:hover { opacity: 0.95; }
     .submit-btn:disabled { background: #bcaaa4; cursor: not-allowed; box-shadow: none; }
@@ -121,7 +124,7 @@
         <div class="amount-value" id="totalAmount">₹0</div>
       </div>
 
-      <!-- Payment Section (Appears immediately when pass is selected without click buttons) -->
+      <!-- Payment Section (Appears immediately when pass is selected) -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         <div class="timer-box">
           ⏳ Payment Session Expires in: <span id="countdown">02:00</span>
@@ -136,6 +139,9 @@
           <img id="qrImage" src="" alt="UPI QR Code">
           <div class="qr-text">Scan via any UPI app to pay</div>
         </div>
+
+        <!-- Scan & Pay Non-Clickable Display Banner -->
+        <div class="scan-pay-display">⚡ SCAN & PAY</div>
 
         <!-- UTR and Screenshot Section -->
         <div class="form-group">
