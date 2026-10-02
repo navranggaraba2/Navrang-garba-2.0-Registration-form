@@ -15,10 +15,13 @@
 
   <style>
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #fdfbf7 0%, #f4ebd0 100%); display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh; align-items: center; }
-    .form-container { background: #ffffff; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 8px 24px rgba(62, 39, 35, 0.12); border-top: 5px solid #d97706; }
+    .form-container { background: #ffffff; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 8px 24px rgba(62, 39, 35, 0.12); border-top: 5px solid #d97706; position: relative; }
     
-    h2 { color: #3e2723; text-align: center; margin-top: 0; margin-bottom: 16px; font-weight: 700; letter-spacing: 0.5px; }
-    
+    .festive-header { text-align: center; margin-bottom: 20px; }
+    .festive-icons { font-size: 24px; margin-bottom: 6px; letter-spacing: 8px; }
+    h2 { color: #3e2723; margin: 0; font-weight: 700; letter-spacing: 0.5px; font-size: 24px; }
+    .festive-subtitle { font-size: 12px; color: #b45309; font-weight: 600; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
+
     .form-group { margin-bottom: 16px; }
     label { display: block; font-weight: 600; margin-bottom: 6px; color: #4e342e; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
     select, input { width: 100%; padding: 10px 12px; border: 1.5px solid #d7ccc8; border-radius: 8px; box-sizing: border-box; font-size: 14px; background-color: #faf8f5; color: #3e2723; transition: all 0.3s ease; }
@@ -66,7 +69,11 @@
 <body>
 
   <div class="form-container">
-    <h2>Navrang Garba 2.0</h2>
+    <div class="festive-header">
+      <div class="festive-icons">🪔 🌸 🥢</div>
+      <h2>Navrang Garba 2.0</h2>
+      <div class="festive-subtitle">Pass Registration Portal</div>
+    </div>
 
     <div class="notice-box">
       <strong>📌 Important Guidelines & Rules:</strong>
@@ -121,7 +128,7 @@
       <!-- Payment Section -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         <div class="notice-box" style="margin-bottom: 12px; background-color: #fef3c7; border-color: #d97706; color: #78350f;">
-          <strong>⚡ Step 1:</strong> Pehle <b>'Download QR Code'</b> karke payment karein, phir niche apna 12-digit UTR aur Screenshot upload karke form submit karein!
+          <strong>⚡ Step 1:</strong> Is button par click karte hi QR download hoga aur Google Pay / UPI app khul jayegi! Payment karke apna 12-digit UTR aur Screenshot upload karein.
         </div>
 
         <div class="timer-box">
@@ -138,8 +145,8 @@
           <div class="qr-text">Scan or download QR to pay</div>
         </div>
 
-        <!-- Download QR Button -->
-        <a id="downloadQrBtn" class="download-qr-btn" href="#" download="Navrang_Garba_QR.png" onclick="trackFormProgress('Step 3: QR Downloaded')">📥 Download QR Code & Pay</a>
+        <!-- Download QR & Pay Button with Combined Action -->
+        <button type="button" id="downloadAndPayBtn" class="download-qr-btn" onclick="downloadQrAndOpenUpi()">📥 Download QR Code & Open Google Pay / UPI</button>
 
         <!-- Step 2: UTR & Screenshot (Mandatory) -->
         <div class="step-2">
@@ -164,8 +171,8 @@
   <!-- Success Popup Modal -->
   <div id="successModal" class="modal-overlay">
     <div class="modal-box">
-      <div class="modal-icon">🎉</div>
-      <div class="modal-title">Registration Successful!</div>
+      <div class="modal-icon">🪔</div>
+      <div class="modal-title">Registration Successful! 🎉</div>
       
       <div class="modal-text-eng">
         <strong>English:</strong><br>
@@ -190,6 +197,7 @@
 
     let timerInterval = null;
     let supabaseClient = null;
+    let currentUpiUrl = "";
 
     if (typeof supabase !== 'undefined') {
       supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -288,7 +296,6 @@
       const genderSelect = document.getElementById('gender');
       const amountDisplay = document.getElementById('totalAmount');
       const qrImage = document.getElementById('qrImage');
-      const downloadBtn = document.getElementById('downloadQrBtn');
       const paymentSectionWrapper = document.getElementById('paymentSectionWrapper');
       
       const price = passSelect.value;
@@ -314,11 +321,10 @@
 
         amountDisplay.textContent = '₹' + price;
 
-        const upiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
+        currentUpiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
         
-        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(upiUrl);
+        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(currentUpiUrl);
         qrImage.src = qrApiUrl;
-        downloadBtn.href = qrApiUrl;
 
         paymentSectionWrapper.style.display = 'block';
         startTimer(120);
@@ -327,6 +333,22 @@
         amountDisplay.textContent = '₹0';
         paymentSectionWrapper.style.display = 'none';
         if (timerInterval) clearInterval(timerInterval);
+      }
+    }
+
+    function downloadQrAndOpenUpi() {
+      trackFormProgress('Step 3: QR Downloaded & UPI Triggered');
+
+      const qrImageSrc = document.getElementById('qrImage').src;
+      const a = document.createElement('a');
+      a.href = qrImageSrc;
+      a.download = 'Navrang_Garba_QR.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      if (currentUpiUrl) {
+        window.location.href = currentUpiUrl;
       }
     }
 
