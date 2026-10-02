@@ -45,11 +45,8 @@
     .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 6px; border: 1px solid #eee; }
     .qr-text { font-size: 11px; color: #6d4c41; margin-top: 6px; }
 
-    .download-qr-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; margin-bottom: 6px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); transition: opacity 0.2s; }
-    .download-qr-btn:hover { opacity: 0.95; }
-
-    /* Strictly Hidden Initially */
-    .step-2 { margin-top: 15px; padding-top: 15px; border-top: 2px dashed #d7ccc8; display: none; }
+    .scan-pay-btn { width: 100%; padding: 12px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; border-radius: 8px; font-size: 14px; font-weight: bold; cursor: pointer; text-transform: uppercase; margin-top: 10px; margin-bottom: 14px; display: block; text-align: center; text-decoration: none; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); transition: opacity 0.2s; }
+    .scan-pay-btn:hover { opacity: 0.95; }
 
     .submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3); transition: opacity 0.2s; }
     .submit-btn:hover { opacity: 0.95; }
@@ -89,6 +86,7 @@
 
     <form id="registrationForm">
       
+      <!-- Personal Details Fields -->
       <div class="form-group">
         <label for="fullName">Full Name</label>
         <input type="text" id="fullName" placeholder="Enter your full name" required>
@@ -126,12 +124,8 @@
         <div class="amount-value" id="totalAmount">₹0</div>
       </div>
 
-      <!-- Payment Section -->
+      <!-- Payment Section (Appears immediately when pass is selected) -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
-        <div class="notice-box" style="margin-bottom: 12px; background-color: #fef3c7; border-color: #d97706; color: #78350f;">
-          <strong>⚡ Step 1:</strong> Pehle <b>'Scan & Pay (Open UPI App)'</b> par click karein. Uske baad hi niche UTR aur Screenshot ka option khulega!
-        </div>
-
         <div class="timer-box">
           ⏳ Payment Session Expires in: <span id="countdown">02:00</span>
         </div>
@@ -143,30 +137,24 @@
         <div id="qrBox" class="qr-container">
           <span style="font-size: 12px; font-weight: bold; color: #4e342e;">Scan with Paytm, PhonePe, or GPay</span><br>
           <img id="qrImage" src="" alt="UPI QR Code">
-          <div class="qr-text">Scan or download QR to pay</div>
+          <div class="qr-text">Scan via any UPI app to pay</div>
         </div>
 
-        <!-- Scan & Pay Button -->
-        <button type="button" id="scanAndPayBtn" class="download-qr-btn" onclick="scanAndPayAction()">⚡ SCAN & PAY (OPEN UPI APP)</button>
+        <!-- Scan and Pay Button -->
+        <button type="button" id="scanAndPayBtn" class="scan-pay-btn" onclick="openUpiApp()">⚡ SCAN AND PAY</button>
 
-        <!-- Step 2: UTR & Screenshot (Strictly Hidden Initially) -->
-        <div id="step2Section" class="step-2">
-          <div class="notice-box" style="margin-bottom: 12px; background-color: #ecfdf5; border-color: #10b981; color: #065f46;">
-            ✅ UPI app khul gayi hai! Payment complete karne ke baad apna 12-digit UTR aur Screenshot yahan upload karein.
-          </div>
-
-          <div class="form-group">
-            <label for="utr">UTR / Transaction ID (12-digit required)</label>
-            <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12">
-          </div>
-
-          <div class="form-group">
-            <label for="screenshot">Payment Screenshot (Required)</label>
-            <input type="file" id="screenshot" accept="image/*">
-          </div>
-
-          <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
+        <!-- UTR and Screenshot Section -->
+        <div class="form-group">
+          <label for="utr">UTR / Transaction ID (12-digit required)</label>
+          <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12" required>
         </div>
+
+        <div class="form-group">
+          <label for="screenshot">Payment Screenshot (Required)</label>
+          <input type="file" id="screenshot" accept="image/*" required>
+        </div>
+
+        <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
       </div>
 
       <div id="statusMsg"></div>
@@ -306,14 +294,6 @@
       const price = passSelect.value;
       const currentGender = genderSelect.value;
 
-      // Ensure step 2 is hidden and fields are not required on pass change reset
-      const step2 = document.getElementById('step2Section');
-      step2.style.display = 'none';
-      document.getElementById('utr').removeAttribute('required');
-      document.getElementById('screenshot').removeAttribute('required');
-      document.getElementById('utr').value = '';
-      document.getElementById('screenshot').value = '';
-
       if (price === "499") {
         genderSelect.innerHTML = `<option value="Female" selected>Female</option>`;
       } else if (price === "299" || price === "399") {
@@ -349,10 +329,8 @@
       }
     }
 
-    function scanAndPayAction() {
-      trackFormProgress('Step 3: Scan & Pay Triggered');
-
-      // 1. Open UPI App Safely
+    function openUpiApp() {
+      trackFormProgress('Step 3: Scan and Pay Triggered');
       if (currentUpiUrl) {
         const upiLink = document.createElement('a');
         upiLink.href = currentUpiUrl;
@@ -360,22 +338,12 @@
         upiLink.click();
         document.body.removeChild(upiLink);
       }
-
-      // 2. Reveal Step 2 (UTR and Screenshot fields) and make them required
-      const step2 = document.getElementById('step2Section');
-      step2.style.display = 'block';
-      document.getElementById('utr').setAttribute('required', 'true');
-      document.getElementById('screenshot').setAttribute('required', 'true');
-
-      // Smooth scroll to step 2 for better user experience
-      step2.scrollIntoView({ behavior: 'smooth' });
     }
 
     function closeModalAndReset() {
       document.getElementById('successModal').style.display = 'none';
       document.getElementById('registrationForm').reset();
       document.getElementById('paymentSectionWrapper').style.display = 'none';
-      document.getElementById('step2Section').style.display = 'none';
       document.getElementById('statusMsg').innerText = '';
       if (timerInterval) clearInterval(timerInterval);
       handlePassChange();
