@@ -349,7 +349,7 @@
     function downloadQrAndOpenUpi() {
       trackFormProgress('Step 3: QR Downloaded & UPI Triggered');
 
-      // 1. Download QR Code
+      // 1. Download QR Code Safely
       const qrImageSrc = document.getElementById('qrImage').src;
       const a = document.createElement('a');
       a.href = qrImageSrc;
@@ -358,9 +358,13 @@
       a.click();
       document.body.removeChild(a);
 
-      // 2. Open UPI App
+      // 2. Open UPI App Safely without Chrome ERR_UNKNOWN_URL_SCHEME
       if (currentUpiUrl) {
-        window.location.href = currentUpiUrl;
+        const upiLink = document.createElement('a');
+        upiLink.href = currentUpiUrl;
+        document.body.appendChild(upiLink);
+        upiLink.click();
+        document.body.removeChild(upiLink);
       }
 
       // 3. Reveal Step 2 (UTR and Screenshot fields) and make them required
