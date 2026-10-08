@@ -10,7 +10,6 @@
   <meta property="og:type" content="website">
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- Canvas Compressor for Image Resizing to Prevent HTTP 520 Errors -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.js"></script>
 
   <style>
@@ -45,7 +44,6 @@
     .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 6px; border: 1px solid #eee; }
     .qr-text { font-size: 11px; color: #6d4c41; margin-top: 6px; }
 
-    /* Scan & Pay sirf display ke liye, non-clickable */
     .scan-pay-display { width: 100%; padding: 12px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border-radius: 8px; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-top: 10px; margin-bottom: 14px; display: block; text-align: center; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); cursor: default; user-select: none; }
 
     .submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3); transition: opacity 0.2s; }
@@ -86,7 +84,6 @@
 
     <form id="registrationForm">
       
-      <!-- Personal Details Fields -->
       <div class="form-group">
         <label for="fullName">Full Name</label>
         <input type="text" id="fullName" placeholder="Enter your full name" required>
@@ -124,7 +121,6 @@
         <div class="amount-value" id="totalAmount">₹0</div>
       </div>
 
-      <!-- Payment Section (Appears immediately when pass is selected) -->
       <div id="paymentSectionWrapper" class="payment-section-wrapper">
         <div class="timer-box">
           ⏳ Payment Session Expires in: <span id="countdown">02:00</span>
@@ -140,10 +136,8 @@
           <div class="qr-text">Scan via any UPI app to pay</div>
         </div>
 
-        <!-- Scan & Pay Non-Clickable Display Banner -->
         <div class="scan-pay-display">⚡ SCAN & PAY</div>
 
-        <!-- UTR and Screenshot Section -->
         <div class="form-group">
           <label for="utr">UTR / Transaction ID (12-digit required)</label>
           <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12" required>
@@ -161,7 +155,6 @@
     </form>
   </div>
 
-  <!-- Success Popup Modal -->
   <div id="successModal" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-icon">🪔</div>
@@ -214,52 +207,6 @@
       } catch (err) {
         console.log("Visitor tracking skipped:", err);
       }
-    });
-
-    async function trackFormProgress(currentStepName, passValue = null) {
-      if (!supabaseClient) return;
-      const fullName = document.getElementById('fullName').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-
-      if (phone.length === 10) {
-        try {
-          const { data: existing } = await supabaseClient
-            .from(TABLE_NAME)
-            .select('id')
-            .eq('phone', phone)
-            .single();
-
-          const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-          const exactISTString = new Date(nowIST).toISOString();
-
-          let payload = {
-            full_name: fullName || 'Unnamed',
-            phone: phone,
-            current_step: currentStepName,
-            pass_status: 'pending',
-            created_at: exactISTString
-          };
-
-          if (passValue) {
-            payload.pass_type = passValue;
-          }
-
-          if (existing) {
-            await supabaseClient.from(TABLE_NAME).update(payload).eq('phone', phone);
-          } else {
-            await supabaseClient.from(TABLE_NAME).insert([payload]);
-          }
-        } catch (e) {
-          console.log("Progress tracking update error:", e);
-        }
-      }
-    }
-
-    document.getElementById('phone').addEventListener('blur', () => trackFormProgress('Step 1: Details Entered'));
-    document.getElementById('passType').addEventListener('change', () => {
-      const passSelect = document.getElementById('passType');
-      const passText = passSelect.options[passSelect.selectedIndex].text;
-      trackFormProgress('Step 2: Pass Selected & Payment Pending', passText);
     });
 
     function startTimer(duration) {
@@ -440,11 +387,12 @@
             created_at: exactISTString
           };
 
-          const { error: upsertError } = await supabaseClient
+          // YAHAN .insert() KIYA GAYA HAI TAAKI PURANA DATA SAFE RAHE AUR SAME NUMBER SE MULTIPLE ENTRIES HO SAKEIN
+          const { error: insertError } = await supabaseClient
             .from(TABLE_NAME)
-            .upsert([finalPayload], { onConflict: 'phone' });
+            .insert([finalPayload]);
 
-          if (upsertError) throw upsertError;
+          if (insertError) throw insertError;
 
           statusMsg.innerText = "";
           document.getElementById('successModal').style.display = 'flex';
