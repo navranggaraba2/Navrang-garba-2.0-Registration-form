@@ -189,26 +189,6 @@
       supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     }
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        if (supabaseClient) {
-          const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-          const exactISTString = new Date(nowIST).toISOString();
-          const visitorReferrer = document.referrer ? document.referrer : 'Direct / Bookmark';
-
-          await supabaseClient.from('PageVisits').insert([
-            {
-              visited_at: exactISTString,
-              user_agent: navigator.userAgent,
-              referrer: visitorReferrer
-            }
-          ]);
-        }
-      } catch (err) {
-        console.log("Visitor tracking skipped:", err);
-      }
-    });
-
     function startTimer(duration) {
       let timer = duration, minutes, seconds;
       const display = document.getElementById('countdown');
@@ -387,7 +367,7 @@
             created_at: exactISTString
           };
 
-          // YAHAN .insert() KIYA GAYA HAI TAAKI PURANA DATA SAFE RAHE AUR SAME NUMBER SE MULTIPLE ENTRIES HO SAKEIN
+          // .insert() ka use kiya hai taaki same number se multiple entries ho sakein
           const { error: insertError } = await supabaseClient
             .from(TABLE_NAME)
             .insert([finalPayload]);
