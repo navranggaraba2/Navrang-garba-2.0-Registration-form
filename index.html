@@ -74,7 +74,6 @@
     <div class="notice-box">
       <strong>📌 Important Guidelines & Rules:</strong>
       <ul>
-        <li>Participant Pass is strictly for <strong>Female</strong> participants only.</li>
         <li>Audience & Freestyle Passes are available for <strong>All (Male, Female, Other)</strong>.</li>
         <li><strong>Only UPI QR Scanner</strong> is the accepted payment method for booking passes.</li>
         <li>One pass is valid for <strong>one person only</strong>.</li>
@@ -105,7 +104,6 @@
           <option value="" disabled selected>Choose a pass</option>
           <option value="299">Audience Pass - ₹299</option>
           <option value="399">Freestyle Pass - ₹399</option>
-          <option value="499">Participant Pass - ₹499</option>
         </select>
       </div>
 
@@ -221,9 +219,7 @@
       const price = passSelect.value;
       const currentGender = genderSelect.value;
 
-      if (price === "499") {
-        genderSelect.innerHTML = `<option value="Female" selected>Female</option>`;
-      } else if (price === "299" || price === "399") {
+      if (price === "299" || price === "399") {
         genderSelect.innerHTML = `
           <option value="" disabled selected>Select Gender</option>
           <option value="Male">Male</option>
@@ -367,7 +363,7 @@
             created_at: exactISTString
           };
 
-          // .insert() ka use kiya hai taaki same number se multiple entries ho sakein
+          // .insert() ka use kiya hai taaki same number se multiple entries ho sakein aur purana data safe rahe
           const { error: insertError } = await supabaseClient
             .from(TABLE_NAME)
             .insert([finalPayload]);
