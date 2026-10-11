@@ -1,392 +1,392 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Navrang Garba 2.0 - Pass Registration</title>
-  
-  <meta property="og:title" content="Navrang Garba 2.0 - Pass Registration">
-  <meta property="og:description" content="Register now for Navrang Garba 2.0 and book your passes online easily!">
-  <meta property="og:type" content="website">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Navrang Garba 2.0 - Pass Registration</title>
+  
+  <meta property="og:title" content="Navrang Garba 2.0 - Pass Registration">
+  <meta property="og:description" content="Register now for Navrang Garba 2.0 and book your passes online easily!">
+  <meta property="og:type" content="website">
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/browser-image-compression/2.0.2/browser-image-compression.js"></script>
 
-  <style>
-    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #fdfbf7 0%, #f4ebd0 100%); display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh; align-items: center; }
-    .form-container { background: #ffffff; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 8px 24px rgba(62, 39, 35, 0.12); border-top: 5px solid #d97706; position: relative; }
-    
-    .festive-header { text-align: center; margin-bottom: 20px; }
-    .festive-icons { font-size: 24px; margin-bottom: 6px; letter-spacing: 8px; }
-    h2 { color: #3e2723; margin: 0; font-weight: 700; letter-spacing: 0.5px; font-size: 24px; }
-    .festive-subtitle { font-size: 12px; color: #b45309; font-weight: 600; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #fdfbf7 0%, #f4ebd0 100%); display: flex; justify-content: center; padding: 20px; margin: 0; min-height: 100vh; align-items: center; }
+    .form-container { background: #ffffff; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 8px 24px rgba(62, 39, 35, 0.12); border-top: 5px solid #d97706; position: relative; }
+    
+    .festive-header { text-align: center; margin-bottom: 20px; }
+    .festive-icons { font-size: 24px; margin-bottom: 6px; letter-spacing: 8px; }
+    h2 { color: #3e2723; margin: 0; font-weight: 700; letter-spacing: 0.5px; font-size: 24px; }
+    .festive-subtitle { font-size: 12px; color: #b45309; font-weight: 600; text-transform: uppercase; margin-top: 4px; letter-spacing: 1px; }
 
-    .form-group { margin-bottom: 16px; }
-    label { display: block; font-weight: 600; margin-bottom: 6px; color: #4e342e; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
-    select, input { width: 100%; padding: 10px 12px; border: 1.5px solid #d7ccc8; border-radius: 8px; box-sizing: border-box; font-size: 14px; background-color: #faf8f5; color: #3e2723; transition: all 0.3s ease; }
-    select:focus, input:focus { outline: none; border-color: #d97706; background-color: #fff; box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15); }
-    
-    .notice-box { background-color: #fffbeb; border-left: 4px solid #d97706; padding: 12px 14px; border-radius: 6px; margin-bottom: 18px; font-size: 12px; color: #78350f; line-height: 1.5; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); }
-    .notice-box strong { display: block; margin-bottom: 4px; font-size: 13px; color: #451a03; }
-    .notice-box ul { margin: 0; padding-left: 16px; }
-    .notice-box li { margin-bottom: 4px; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-weight: 600; margin-bottom: 6px; color: #4e342e; font-size: 13px; text-transform: uppercase; letter-spacing: 0.3px; }
+    select, input { width: 100%; padding: 10px 12px; border: 1.5px solid #d7ccc8; border-radius: 8px; box-sizing: border-box; font-size: 14px; background-color: #faf8f5; color: #3e2723; transition: all 0.3s ease; }
+    select:focus, input:focus { outline: none; border-color: #d97706; background-color: #fff; box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.15); }
+    
+    .notice-box { background-color: #fffbeb; border-left: 4px solid #d97706; padding: 12px 14px; border-radius: 6px; margin-bottom: 18px; font-size: 12px; color: #78350f; line-height: 1.5; box-shadow: inset 0 1px 2px rgba(0,0,0,0.02); }
+    .notice-box strong { display: block; margin-bottom: 4px; font-size: 13px; color: #451a03; }
+    .notice-box ul { margin: 0; padding-left: 16px; }
+    .notice-box li { margin-bottom: 4px; }
 
-    .amount-box { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); text-align: center; padding: 14px; border-radius: 8px; margin: 16px 0; border: 1px solid #ffe082; }
-    .amount-title { font-size: 12px; color: #795548; font-weight: 600; text-transform: uppercase; }
-    .amount-value { font-size: 26px; font-weight: 800; color: #3e2723; margin-top: 4px; }
-    
-    .payment-section-wrapper { border: 2px dashed #d97706; padding: 16px; border-radius: 10px; background: #fffdf9; margin-top: 15px; display: none; }
-    .timer-box { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 8px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 12px; }
-    .timer-box span { color: #b45309; font-size: 14px; }
+    .amount-box { background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%); text-align: center; padding: 14px; border-radius: 8px; margin: 16px 0; border: 1px solid #ffe082; }
+    .amount-title { font-size: 12px; color: #795548; font-weight: 600; text-transform: uppercase; }
+    .amount-value { font-size: 26px; font-weight: 800; color: #3e2723; margin-top: 4px; }
+    
+    .payment-section-wrapper { border: 2px dashed #d97706; padding: 16px; border-radius: 10px; background: #fffdf9; margin-top: 15px; display: none; }
+    .timer-box { background-color: #fef3c7; color: #92400e; border: 1px solid #fde68a; padding: 8px; border-radius: 6px; text-align: center; font-size: 12px; font-weight: bold; margin-bottom: 12px; }
+    .timer-box span { color: #b45309; font-size: 14px; }
 
-    .upi-info { text-align: center; font-size: 13px; color: #5d4037; margin-bottom: 12px; font-weight: 500; }
-    .qr-container { text-align: center; margin: 10px 0; padding: 12px; background: #ffffff; border: 1px solid #e7e0d8; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-    .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 6px; border: 1px solid #eee; }
-    .qr-text { font-size: 11px; color: #6d4c41; margin-top: 6px; }
+    .upi-info { text-align: center; font-size: 13px; color: #5d4037; margin-bottom: 12px; font-weight: 500; }
+    .qr-container { text-align: center; margin: 10px 0; padding: 12px; background: #ffffff; border: 1px solid #e7e0d8; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .qr-container img { width: 160px; height: 160px; margin-top: 8px; border-radius: 6px; border: 1px solid #eee; }
+    .qr-text { font-size: 11px; color: #6d4c41; margin-top: 6px; }
 
-    .scan-pay-display { width: 100%; padding: 12px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border-radius: 8px; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-top: 10px; margin-bottom: 14px; display: block; text-align: center; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); cursor: default; user-select: none; }
+    .scan-pay-display { width: 100%; padding: 12px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border-radius: 8px; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-top: 10px; margin-bottom: 14px; display: block; text-align: center; box-sizing: border-box; box-shadow: 0 4px 10px rgba(180, 83, 9, 0.25); cursor: default; user-select: none; }
 
-    .submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3); transition: opacity 0.2s; }
-    .submit-btn:hover { opacity: 0.95; }
-    .submit-btn:disabled { background: #bcaaa4; cursor: not-allowed; box-shadow: none; }
-    
-    #statusMsg { margin-top: 14px; text-align: center; font-weight: bold; font-size: 13px; }
+    .submit-btn { width: 100%; padding: 13px; background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 12px; box-shadow: 0 4px 12px rgba(62, 39, 35, 0.3); transition: opacity 0.2s; }
+    .submit-btn:hover { opacity: 0.95; }
+    .submit-btn:disabled { background: #bcaaa4; cursor: not-allowed; box-shadow: none; }
+    
+    #statusMsg { margin-top: 14px; text-align: center; font-weight: bold; font-size: 13px; }
 
-    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(62, 39, 35, 0.65); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; backdrop-filter: blur(3px); }
-    .modal-box { background: #fff; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-top: 5px solid #d97706; animation: scaleUp 0.3s ease-in-out; }
-    @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .modal-icon { font-size: 48px; color: #d97706; margin-bottom: 10px; }
-    .modal-title { font-size: 18px; font-weight: bold; color: #3e2723; margin-bottom: 15px; }
-    .modal-text-eng { font-size: 13px; color: #4e342e; line-height: 1.5; margin-bottom: 12px; background: #fff8e1; padding: 10px; border-radius: 6px; border-left: 4px solid #d97706; text-align: left; }
-    .modal-text-hin { font-size: 13px; color: #4e342e; line-height: 1.5; margin-bottom: 20px; background: #fef3c7; padding: 10px; border-radius: 6px; border-left: 4px solid #b45309; text-align: left; }
-    .modal-btn { background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; padding: 11px 20px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(62, 39, 35, 0.2); }
-  </style>
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(62, 39, 35, 0.65); justify-content: center; align-items: center; z-index: 1000; padding: 15px; box-sizing: border-box; backdrop-filter: blur(3px); }
+    .modal-box { background: #fff; padding: 30px; border-radius: 12px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.2); border-top: 5px solid #d97706; animation: scaleUp 0.3s ease-in-out; }
+    @keyframes scaleUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal-icon { font-size: 48px; color: #d97706; margin-bottom: 10px; }
+    .modal-title { font-size: 18px; font-weight: bold; color: #3e2723; margin-bottom: 15px; }
+    .modal-text-eng { font-size: 13px; color: #4e342e; line-height: 1.5; margin-bottom: 12px; background: #fff8e1; padding: 10px; border-radius: 6px; border-left: 4px solid #d97706; text-align: left; }
+    .modal-text-hin { font-size: 13px; color: #4e342e; line-height: 1.5; margin-bottom: 20px; background: #fef3c7; padding: 10px; border-radius: 6px; border-left: 4px solid #b45309; text-align: left; }
+    .modal-btn { background: linear-gradient(135deg, #4e342e 0%, #3e2723 100%); color: white; border: none; padding: 11px 20px; font-size: 14px; font-weight: bold; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(62, 39, 35, 0.2); }
+  </style>
 </head>
 <body>
 
-  <div class="form-container">
-    <div class="festive-header">
-      <div class="festive-icons">🪔 🌸 🥢</div>
-      <h2>Navrang Garba 2.0</h2>
-      <div class="festive-subtitle">Pass Registration Portal</div>
-    </div>
+  <div class="form-container">
+    <div class="festive-header">
+      <div class="festive-icons">🪔 🌸 🥢</div>
+      <h2>Navrang Garba 2.0</h2>
+      <div class="festive-subtitle">Pass Registration Portal</div>
+    </div>
 
-    <div class="notice-box">
-      <strong>📌 Important Guidelines & Rules:</strong>
-      <ul>
-        <li>Participant Pass is strictly for <strong>Female</strong> participants only.</li>
-        <li>Audience & Freestyle Passes are available for <strong>All (Male, Female, Other)</strong>.</li>
-        <li><strong>Only UPI QR Scanner</strong> is the accepted payment method for booking passes.</li>
-        <li>One pass is valid for <strong>one person only</strong>.</li>
-        <li>Please submit your UTR / payment screenshot within <strong>10 minutes</strong> of completing the payment.</li>
-      </ul>
-    </div>
+    <div class="notice-box">
+      <strong>📌 Important Guidelines & Rules:</strong>
+      <ul>
+        <li>Participant Pass is strictly for <strong>Female</strong> participants only.</li>
+        <li>Audience & Freestyle Passes are available for <strong>All (Male, Female, Other)</strong>.</li>
+        <li><strong>Only UPI QR Scanner</strong> is the accepted payment method for booking passes.</li>
+        <li>One pass is valid for <strong>one person only</strong>.</li>
+        <li>Please submit your UTR / payment screenshot within <strong>10 minutes</strong> of completing the payment.</li>
+      </ul>
+    </div>
 
-    <form id="registrationForm">
-      
-      <div class="form-group">
-        <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" placeholder="Enter your full name" required>
-      </div>
+    <form id="registrationForm">
+      
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" placeholder="Enter your full name" required>
+      </div>
 
-      <div class="form-group">
-        <label for="phone">Phone Number</label>
-        <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" required>
-      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" required>
+      </div>
 
-      <div class="form-group">
-        <label for="dob">Date of Birth</label>
-        <input type="date" id="dob" required>
-      </div>
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" required>
+      </div>
 
-      <div class="form-group">
-        <label for="passType">Select Pass Type</label>
-        <select id="passType" required>
-          <option value="" disabled selected>Choose a pass</option>
-          <option value="299">Audience Pass - ₹299</option>
-          <option value="399">Freestyle Pass - ₹399</option>
-          <option value="499">Participant Pass - ₹499</option>
-        </select>
-      </div>
+      <div class="form-group">
+        <label for="passType">Select Pass Type</label>
+        <select id="passType" required>
+          <option value="" disabled selected>Choose a pass</option>
+          <option value="299">Audience Pass - ₹299</option>
+          <option value="399">Freestyle Pass - ₹399</option>
+          <option value="499">Participant Pass - ₹499</option>
+        </select>
+      </div>
 
-      <div class="form-group">
-        <label for="gender">Select Gender</label>
-        <select id="gender" required>
-          <option value="" disabled selected>Select pass type first</option>
-        </select>
-      </div>
+      <div class="form-group">
+        <label for="gender">Select Gender</label>
+        <select id="gender" required>
+          <option value="" disabled selected>Select pass type first</option>
+        </select>
+      </div>
 
-      <div class="amount-box">
-        <div class="amount-title">Total Amount</div>
-        <div class="amount-value" id="totalAmount">₹0</div>
-      </div>
+      <div class="amount-box">
+        <div class="amount-title">Total Amount</div>
+        <div class="amount-value" id="totalAmount">₹0</div>
+      </div>
 
-      <div id="paymentSectionWrapper" class="payment-section-wrapper">
-        <div class="timer-box">
-          ⏳ Payment Session Expires in: <span id="countdown">02:00</span>
-        </div>
+      <div id="paymentSectionWrapper" class="payment-section-wrapper">
+        <div class="timer-box">
+          ⏳ Payment Session Expires in: <span id="countdown">02:00</span>
+        </div>
 
-        <div class="upi-info">
-          Payment UPI ID: <strong>Navranggarba2.0@ybl</strong>
-        </div>
+        <div class="upi-info">
+          Payment UPI ID: <strong>Navranggarba2.0@ybl</strong>
+        </div>
 
-        <div id="qrBox" class="qr-container">
-          <span style="font-size: 12px; font-weight: bold; color: #4e342e;">Scan with Paytm, PhonePe, or GPay</span><br>
-          <img id="qrImage" src="" alt="UPI QR Code">
-          <div class="qr-text">Scan via any UPI app to pay</div>
-        </div>
+        <div id="qrBox" class="qr-container">
+          <span style="font-size: 12px; font-weight: bold; color: #4e342e;">Scan with Paytm, PhonePe, or GPay</span><br>
+          <img id="qrImage" src="" alt="UPI QR Code">
+          <div class="qr-text">Scan via any UPI app to pay</div>
+        </div>
 
-        <div class="scan-pay-display">⚡ SCAN & PAY</div>
+        <div class="scan-pay-display">⚡ SCAN & PAY</div>
 
-        <div class="form-group">
-          <label for="utr">UTR / Transaction ID (12-digit required)</label>
-          <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12" required>
-        </div>
+        <div class="form-group">
+          <label for="utr">UTR / Transaction ID (12-digit required)</label>
+          <input type="text" id="utr" placeholder="Enter 12-digit UTR ID" minlength="12" maxlength="12" required>
+        </div>
 
-        <div class="form-group">
-          <label for="screenshot">Payment Screenshot (Required)</label>
-          <input type="file" id="screenshot" accept="image/*" required>
-        </div>
+        <div class="form-group">
+          <label for="screenshot">Payment Screenshot (Required)</label>
+          <input type="file" id="screenshot" accept="image/*" required>
+        </div>
 
-        <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
-      </div>
+        <button type="submit" id="submitBtn" class="submit-btn">SUBMIT REGISTRATION</button>
+      </div>
 
-      <div id="statusMsg"></div>
-    </form>
-  </div>
+      <div id="statusMsg"></div>
+    </form>
+  </div>
 
-  <div id="successModal" class="modal-overlay">
-    <div class="modal-box">
-      <div class="modal-icon">🪔</div>
-      <div class="modal-title">Registration Successful! 🎉</div>
-      
-      <div class="modal-text-eng">
-        <strong>English:</strong><br>
-        After making the payment, please do not worry. You will receive your pass between <b>7:00 AM – 9:00 AM</b> or <b>7:00 PM – 9:00 PM</b>.
-      </div>
+  <div id="successModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-icon">🪔</div>
+      <div class="modal-title">Registration Successful! 🎉</div>
+      
+      <div class="modal-text-eng">
+        <strong>English:</strong><br>
+        After making the payment, please do not worry. You will receive your pass between <b>7:00 AM – 9:00 AM</b> or <b>7:00 PM – 9:00 PM</b>.
+      </div>
 
-      <div class="modal-text-hin">
-        <strong>हिंदी (Hindi):</strong><br>
-        पेमेंट करने के बाद कृपया परेशान न हों। आपको आपका पास सुबह <b>7:00 AM – 9:00 AM</b> या शाम <b>7:00 PM – 9:00 PM</b> के बीच मिल जाएगा।
-      </div>
+      <div class="modal-text-hin">
+        <strong>हिंदी (Hindi):</strong><br>
+        पेमेंट करने के बाद कृपया परेशान न हों। आपको आपका पास सुबह <b>7:00 AM – 9:00 AM</b> या शाम <b>7:00 PM – 9:00 PM</b> के बीच मिल जाएगा।
+      </div>
 
-      <button class="modal-btn" onclick="closeModalAndReset()">OK / Done</button>
-    </div>
-  </div>
+      <button class="modal-btn" onclick="closeModalAndReset()">OK / Done</button>
+    </div>
+  </div>
 
-  <script>
-    const SUPABASE_URL = 'https://rdjdsqlawhawoywgvyro.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_c_uKHsH5pKT8TyKa1IqC-g_-nLUMI5W';
-    const BUCKET_NAME = 'Payment_Screenshot';
-    const TABLE_NAME = 'Registration';
-    const upiId = "Navranggarba2.0@ybl";
+  <script>
+    const SUPABASE_URL = 'https://rdjdsqlawhawoywgvyro.supabase.co';
+    const SUPABASE_ANON_KEY = 'sb_publishable_c_uKHsH5pKT8TyKa1IqC-g_-nLUMI5W';
+    const BUCKET_NAME = 'Payment_Screenshot';
+    const TABLE_NAME = 'Registration';
+    const upiId = "Navranggarba2.0@ybl";
 
-    let timerInterval = null;
-    let supabaseClient = null;
-    let currentUpiUrl = "";
+    let timerInterval = null;
+    let supabaseClient = null;
+    let currentUpiUrl = "";
 
-    if (typeof supabase !== 'undefined') {
-      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    }
+    if (typeof supabase !== 'undefined') {
+      supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    }
 
-    function startTimer(duration) {
-      let timer = duration, minutes, seconds;
-      const display = document.getElementById('countdown');
-      
-      if (timerInterval) clearInterval(timerInterval);
+    function startTimer(duration) {
+      let timer = duration, minutes, seconds;
+      const display = document.getElementById('countdown');
+      
+      if (timerInterval) clearInterval(timerInterval);
 
-      timerInterval = setInterval(() => {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
+      timerInterval = setInterval(() => {
+        minutes = parseInt(timer / 60, 10);
+        seconds = parseInt(timer % 60, 10);
 
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
+        minutes = minutes < 10 ? "0" + minutes : minutes;
+        seconds = seconds < 10 ? "0" + seconds : seconds;
 
-        display.textContent = minutes + ":" + seconds;
+        display.textContent = minutes + ":" + seconds;
 
-        if (--timer < 0) {
-          clearInterval(timerInterval);
-          display.textContent = "00:00 (Time Expired)";
-        }
-      }, 1000);
-    }
+        if (--timer < 0) {
+          clearInterval(timerInterval);
+          display.textContent = "00:00 (Time Expired)";
+        }
+      }, 1000);
+    }
 
-    function handlePassChange() {
-      const passSelect = document.getElementById('passType');
-      const genderSelect = document.getElementById('gender');
-      const amountDisplay = document.getElementById('totalAmount');
-      const qrImage = document.getElementById('qrImage');
-      const paymentSectionWrapper = document.getElementById('paymentSectionWrapper');
-      
-      const price = passSelect.value;
-      const currentGender = genderSelect.value;
+    function handlePassChange() {
+      const passSelect = document.getElementById('passType');
+      const genderSelect = document.getElementById('gender');
+      const amountDisplay = document.getElementById('totalAmount');
+      const qrImage = document.getElementById('qrImage');
+      const paymentSectionWrapper = document.getElementById('paymentSectionWrapper');
+      
+      const price = passSelect.value;
+      const currentGender = genderSelect.value;
 
-      if (price === "499") {
-        genderSelect.innerHTML = `<option value="Female" selected>Female</option>`;
-      } else if (price === "299" || price === "399") {
-        genderSelect.innerHTML = `
-          <option value="" disabled selected>Select Gender</option>
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="Other">Other</option>
-        `;
-        if (currentGender) genderSelect.value = currentGender;
-      } else {
-        genderSelect.innerHTML = `<option value="" disabled selected>Select pass type first</option>`;
-      }
+      if (price === "499") {
+        genderSelect.innerHTML = `<option value="Female" selected>Female</option>`;
+      } else if (price === "299" || price === "399") {
+        genderSelect.innerHTML = `
+          <option value="" disabled selected>Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        `;
+        if (currentGender) genderSelect.value = currentGender;
+      } else {
+        genderSelect.innerHTML = `<option value="" disabled selected>Select pass type first</option>`;
+      }
 
-      if (price && price !== "") {
-        const selectedOptionText = passSelect.options[passSelect.selectedIndex].text;
-        const passName = selectedOptionText.split('-')[0].trim();
+      if (price && price !== "") {
+        const selectedOptionText = passSelect.options[passSelect.selectedIndex].text;
+        const passName = selectedOptionText.split('-')[0].trim();
 
-        amountDisplay.textContent = '₹' + price;
+        amountDisplay.textContent = '₹' + price;
 
-        currentUpiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
-        
-        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(currentUpiUrl);
-        qrImage.src = qrApiUrl;
+        currentUpiUrl = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent("Navrang Garba")}&am=${price}&cu=INR&tn=${encodeURIComponent(passName)}`;
+        
+        const qrApiUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=' + encodeURIComponent(currentUpiUrl);
+        qrImage.src = qrApiUrl;
 
-        paymentSectionWrapper.style.display = 'block';
-        startTimer(120);
+        paymentSectionWrapper.style.display = 'block';
+        startTimer(120);
 
-      } else {
-        amountDisplay.textContent = '₹0';
-        paymentSectionWrapper.style.display = 'none';
-        if (timerInterval) clearInterval(timerInterval);
-      }
-    }
+      } else {
+        amountDisplay.textContent = '₹0';
+        paymentSectionWrapper.style.display = 'none';
+        if (timerInterval) clearInterval(timerInterval);
+      }
+    }
 
-    function closeModalAndReset() {
-      document.getElementById('successModal').style.display = 'none';
-      document.getElementById('registrationForm').reset();
-      document.getElementById('paymentSectionWrapper').style.display = 'none';
-      document.getElementById('statusMsg').innerText = '';
-      if (timerInterval) clearInterval(timerInterval);
-      handlePassChange();
-    }
+    function closeModalAndReset() {
+      document.getElementById('successModal').style.display = 'none';
+      document.getElementById('registrationForm').reset();
+      document.getElementById('paymentSectionWrapper').style.display = 'none';
+      document.getElementById('statusMsg').innerText = '';
+      if (timerInterval) clearInterval(timerInterval);
+      handlePassChange();
+    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      const passSelect = document.getElementById('passType');
-      passSelect.addEventListener('change', handlePassChange);
+    document.addEventListener('DOMContentLoaded', () => {
+      const passSelect = document.getElementById('passType');
+      passSelect.addEventListener('change', handlePassChange);
 
-      const form = document.getElementById('registrationForm');
-      const statusMsg = document.getElementById('statusMsg');
-      const submitBtn = document.getElementById('submitBtn');
+      const form = document.getElementById('registrationForm');
+      const statusMsg = document.getElementById('statusMsg');
+      const submitBtn = document.getElementById('submitBtn');
 
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
 
-        const enteredUtr = document.getElementById('utr').value.trim();
-        if (enteredUtr.length !== 12) {
-          statusMsg.style.color = "#b45309";
-          statusMsg.innerText = "⚠️ Kripya valid 12-digit UTR / Transaction ID hi enter karein!";
-          return;
-        }
+        const enteredUtr = document.getElementById('utr').value.trim();
+        if (enteredUtr.length !== 12) {
+          statusMsg.style.color = "#b45309";
+          statusMsg.innerText = "⚠️ Kripya valid 12-digit UTR / Transaction ID hi enter karein!";
+          return;
+        }
 
-        if (!supabaseClient) {
-          statusMsg.style.color = "red";
-          statusMsg.innerText = "Error: Database connection failed. Reload page.";
-          return;
-        }
+        if (!supabaseClient) {
+          statusMsg.style.color = "red";
+          statusMsg.innerText = "Error: Database connection failed. Reload page.";
+          return;
+        }
 
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Checking UTR...";
-        statusMsg.style.color = "#d97706";
-        statusMsg.innerText = "Verifying transaction details...";
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Checking UTR...";
+        statusMsg.style.color = "#d97706";
+        statusMsg.innerText = "Verifying transaction details...";
 
-        try {
-          const { data: existingUtrRows, error: checkError } = await supabaseClient
-            .from(TABLE_NAME)
-            .select('id, utr')
-            .eq('utr', enteredUtr);
+        try {
+          const { data: existingUtrRows, error: checkError } = await supabaseClient
+            .from(TABLE_NAME)
+            .select('id, utr')
+            .eq('utr', enteredUtr);
 
-          if (checkError) throw checkError;
+          if (checkError) throw checkError;
 
-          if (existingUtrRows && existingUtrRows.length > 0) {
-            statusMsg.style.color = "red";
-            statusMsg.innerText = "❌ This UTR / Transaction ID has already been used. Please enter a valid unique UTR.";
-            submitBtn.disabled = false;
-            submitBtn.innerText = "SUBMIT REGISTRATION";
-            return;
-          }
+          if (existingUtrRows && existingUtrRows.length > 0) {
+            statusMsg.style.color = "red";
+            statusMsg.innerText = "❌ This UTR / Transaction ID has already been used. Please enter a valid unique UTR.";
+            submitBtn.disabled = false;
+            submitBtn.innerText = "SUBMIT REGISTRATION";
+            return;
+          }
 
-          submitBtn.innerText = "Compressing Screenshot...";
-          statusMsg.innerText = "Optimizing payment screenshot size...";
+          submitBtn.innerText = "Compressing Screenshot...";
+          statusMsg.innerText = "Optimizing payment screenshot size...";
 
-          const fileInput = document.getElementById('screenshot');
-          let file = fileInput.files[0];
+          const fileInput = document.getElementById('screenshot');
+          let file = fileInput.files[0];
 
-          const options = {
-            maxSizeMB: 0.5,
-            maxWidthOrHeight: 1024,
-            useWebWorker: true
-          };
-          
-          try {
-            file = await imageCompression(file, options);
-          } catch (compErr) {
-            console.log("Compression skipped, using original file", compErr);
-          }
+          const options = {
+            maxSizeMB: 0.5,
+            maxWidthOrHeight: 1024,
+            useWebWorker: true
+          };
+          
+          try {
+            file = await imageCompression(file, options);
+          } catch (compErr) {
+            console.log("Compression skipped, using original file", compErr);
+          }
 
-          submitBtn.innerText = "Uploading Screenshot...";
-          statusMsg.innerText = "Uploading payment screenshot...";
+          submitBtn.innerText = "Uploading Screenshot...";
+          statusMsg.innerText = "Uploading payment screenshot...";
 
-          const fileName = Date.now() + '_' + file.name;
+          const fileName = Date.now() + '_' + file.name;
 
-          const { data: uploadData, error: uploadError } = await supabaseClient.storage
-            .from(BUCKET_NAME)
-            .upload(fileName, file);
+          const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            .from(BUCKET_NAME)
+            .upload(fileName, file);
 
-          if (uploadError) throw uploadError;
+          if (uploadError) throw uploadError;
 
-          const { data: publicUrlData } = supabaseClient.storage
-            .from(BUCKET_NAME)
-            .getPublicUrl(fileName);
+          const { data: publicUrlData } = supabaseClient.storage
+            .from(BUCKET_NAME)
+            .getPublicUrl(fileName);
 
-          const screenshotUrl = publicUrlData.publicUrl;
+          const screenshotUrl = publicUrlData.publicUrl;
 
-          submitBtn.innerText = "Submitting...";
-          statusMsg.innerText = "Finalizing registration...";
+          submitBtn.innerText = "Submitting...";
+          statusMsg.innerText = "Finalizing registration...";
 
-          const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
-          const exactISTString = new Date(nowIST).toISOString();
+          const nowIST = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+          const exactISTString = new Date(nowIST).toISOString();
 
-          const phoneVal = document.getElementById('phone').value;
+          const phoneVal = document.getElementById('phone').value;
 
-          const finalPayload = {
-            full_name: document.getElementById('fullName').value,
-            phone: phoneVal,
-            gender: document.getElementById('gender').value,
-            dob: document.getElementById('dob').value,
-            pass_type: passSelect.options[passSelect.selectedIndex].text,
-            amount: document.getElementById('totalAmount').textContent,
-            utr: enteredUtr,
-            screenshot_url: screenshotUrl,
-            pass_status: 'success',
-            current_step: 'Fully Completed ✅',
-            created_at: exactISTString
-          };
+          const finalPayload = {
+            full_name: document.getElementById('fullName').value,
+            phone: phoneVal,
+            gender: document.getElementById('gender').value,
+            dob: document.getElementById('dob').value,
+            pass_type: passSelect.options[passSelect.selectedIndex].text,
+            amount: document.getElementById('totalAmount').textContent,
+            utr: enteredUtr,
+            screenshot_url: screenshotUrl,
+            pass_status: 'success',
+            current_step: 'Fully Completed ✅',
+            created_at: exactISTString
+          };
 
-          // .insert() ka use kiya hai taaki same number se multiple entries ho sakein
-          const { error: insertError } = await supabaseClient
-            .from(TABLE_NAME)
-            .insert([finalPayload]);
+          // .insert() ka use kiya hai taaki same number se multiple entries ho sakein aur purana data safe rahe
+          const { error: insertError } = await supabaseClient
+            .from(TABLE_NAME)
+            .insert([finalPayload]);
 
-          if (insertError) throw insertError;
+          if (insertError) throw insertError;
 
-          statusMsg.innerText = "";
-          document.getElementById('successModal').style.display = 'flex';
+          statusMsg.innerText = "";
+          document.getElementById('successModal').style.display = 'flex';
 
-        } catch (err) {
-          console.error("Error:", err);
-          statusMsg.style.color = "red";
-          statusMsg.innerText = "Error: " + (err.message || "Failed to submit.");
-        } finally {
-          submitBtn.disabled = false;
-          submitBtn.innerText = "SUBMIT REGISTRATION";
-        }
-      });
-    });
-  </script>
+        } catch (err) {
+          console.error("Error:", err);
+          statusMsg.style.color = "red";
+          statusMsg.innerText = "Error: " + (err.message || "Failed to submit.");
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerText = "SUBMIT REGISTRATION";
+        }
+      });
+    });
+  </script>
 </body>
 </html>
